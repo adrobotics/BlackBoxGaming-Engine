@@ -1,6 +1,7 @@
-package com.blackboxgaming.engine;
+package com.blackboxgaming.engine.managers;
 
 import com.badlogic.gdx.utils.Disposable;
+import com.blackboxgaming.engine.Entity;
 import com.blackboxgaming.engine.systems.ISystem;
 import java.util.LinkedHashMap;
 import java.util.Map;

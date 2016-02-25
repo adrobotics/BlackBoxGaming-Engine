@@ -1,5 +1,7 @@
-package com.blackboxgaming.engine;
+package com.blackboxgaming.engine.managers;
 
+import com.blackboxgaming.engine.Engine;
+import com.blackboxgaming.engine.Entity;
 import com.blackboxgaming.engine.components.*;
 import com.blackboxgaming.engine.components.ai.Follow;
 import com.blackboxgaming.engine.systems.*;

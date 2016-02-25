@@ -1,4 +1,4 @@
-package com.blackboxgaming.engine;
+package com.blackboxgaming.engine.managers;
 
 import com.badlogic.gdx.utils.Disposable;
 import java.util.ArrayList;

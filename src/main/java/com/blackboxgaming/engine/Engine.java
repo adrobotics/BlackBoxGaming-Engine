@@ -1,5 +1,10 @@
 package com.blackboxgaming.engine;
 
+import com.blackboxgaming.engine.managers.SystemManager;
+import com.blackboxgaming.engine.managers.InputManager;
+import com.blackboxgaming.engine.managers.GarbageManager;
+import com.blackboxgaming.engine.managers.EntityManager;
+import com.blackboxgaming.engine.managers.AssetManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
@@ -8,12 +13,19 @@ import com.blackboxgaming.engine.util.Global;
 import java.util.Map;
 
 /**
+ * Main engine class that contains all managers, screens, preferences and 
  *
  * @author Adrian
+ * @see EntityManager
+ * @see SystemManager
+ * @see InputManager
+ * @see GarbageManager
+ * @see AssetManager
+ * @see Screen
+ * @see Preferences
  */
 public class Engine {
 
-    public static Preferences preferences = Gdx.app.getPreferences("SuburBallUserData");
     public static Game game;
     public static Map<String, Screen> screens;
     public static final EntityManager entityManager = new EntityManager();
@@ -21,6 +33,7 @@ public class Engine {
     public static final InputManager inputManager = new InputManager();
     public static final GarbageManager garbageManager = new GarbageManager();
     public static final AssetManager assetManager = new AssetManager();
+    public static final Preferences preferences = Gdx.app.getPreferences("BlackBoxGaming-Preferences");
 
     public static void update(float delta) {
         systemManager.update(delta);

@@ -2,7 +2,9 @@ package com.blackboxgaming.engine;
 
 import com.blackboxgaming.engine.components.Damage;
 import com.blackboxgaming.engine.components.Health;
+import com.blackboxgaming.engine.components.Sound;
 import org.junit.Test;
+import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
 /**
@@ -50,6 +52,15 @@ public class EntityTest {
         assertEquals(health, e.remove(Health.class));
         assertNull(e.remove(Health.class));
         assertFalse(e.has(Health.class));
+    }
+    
+    @Test
+    public void testDispose(){
+        Entity e = new Entity();
+        Sound sound = mock(Sound.class);
+        e.add(sound);
+        e.dispose();
+        verify(sound).dispose();
     }
 
     @Test
