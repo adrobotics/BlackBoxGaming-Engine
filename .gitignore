@@ -1,4 +1,4 @@
 target/
 build/
-.gragle/
-.nb-gradle/
+.gradle
+.nb-gradle
