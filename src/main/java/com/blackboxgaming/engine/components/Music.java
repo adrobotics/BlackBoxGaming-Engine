@@ -2,7 +2,7 @@ package com.blackboxgaming.engine.components;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Disposable;
-import com.blackboxgaming.engine.AssetManager;
+import com.blackboxgaming.engine.managers.AssetManager;
 
 /**
  *

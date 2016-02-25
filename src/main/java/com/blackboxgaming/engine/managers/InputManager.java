@@ -1,4 +1,4 @@
-package com.blackboxgaming.engine;
+package com.blackboxgaming.engine.managers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;

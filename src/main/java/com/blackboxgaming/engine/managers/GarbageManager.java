@@ -1,6 +1,8 @@
-package com.blackboxgaming.engine;
+package com.blackboxgaming.engine.managers;
 
 import com.badlogic.gdx.utils.Disposable;
+import com.blackboxgaming.engine.Engine;
+import com.blackboxgaming.engine.Entity;
 import com.blackboxgaming.engine.components.Parent;
 import java.util.ArrayList;
 import java.util.List;

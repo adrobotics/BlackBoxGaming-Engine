@@ -18,4 +18,9 @@ public class Health implements IComponent {
         return currentHealth <= 0;
     }
 
+    @Override
+    public String toString() {
+        return "Health{" + "maxHealth=" + maxHealth + ", currentHealth=" + currentHealth + '}';
+    }
+
 }
