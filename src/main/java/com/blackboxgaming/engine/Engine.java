@@ -13,7 +13,7 @@ import com.blackboxgaming.engine.util.Global;
 import java.util.Map;
 
 /**
- * Main engine class that contains all managers, screens, preferences and 
+ * Main engine class that contains all managers, screens and preferences 
  *
  * @author Adrian
  * @see EntityManager
