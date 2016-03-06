@@ -3,6 +3,8 @@ package com.blackboxgaming.engine;
 import com.blackboxgaming.engine.components.Damage;
 import com.blackboxgaming.engine.components.Health;
 import com.blackboxgaming.engine.components.Sound;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
@@ -15,9 +17,12 @@ public class EntityTest {
 
     @Test
     public void testUniqueIds() {
-        Entity e1 = new Entity();
-        Entity e2 = new Entity();
-        assertNotEquals(e1.id, e2.id);
+        int max = 10_000;
+        Set<Entity> ids = new HashSet(max);
+        for (int i = 0; i < max; i++) {
+            ids.add(new Entity());
+        }
+        assertEquals(max, ids.size());
     }
 
     @Test
@@ -53,9 +58,9 @@ public class EntityTest {
         assertNull(e.remove(Health.class));
         assertFalse(e.has(Health.class));
     }
-    
+
     @Test
-    public void testDispose(){
+    public void testDispose() {
         Entity e = new Entity();
         Sound sound = mock(Sound.class);
         e.add(sound);

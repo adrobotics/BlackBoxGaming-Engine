@@ -41,15 +41,14 @@ public class Global {
     public static final boolean showSplashScreen = true;
     public static final boolean showMenuScreen = true;
     public static boolean profiling = false;
-    
-    
+
     public static boolean renderHealthBar = false;
     public static final float splashScreenTime = 3000;
     public static boolean START_WITH_ANDROID_GESTURE_LISTENER = false;
     public static Button scoreButton;
     public static Label LEVEL_LABEL;
     public static Label HEALTH_LABEL;
-    
+
     // debug
     public static boolean DEBUG_FRUSTRUM_CULLING_SHAPES = false;
     public static boolean DEBUG_ROTATION = false;
@@ -59,7 +58,7 @@ public class Global {
 
     public static Entity mainCharacter;
 
-    public static boolean SYNC_KEYBOARD_CAM_ROTATION = false;
+    public static boolean SYNC_KEYBOARD_CAM_ROTATION = true;
 
     // pysics
     public static final List<Integer> PHYSICS_CONTACT_GROUP_WALL = new ArrayList();
@@ -152,13 +151,20 @@ public class Global {
     public static Camera getCamera() {
         if (camera == null) {
             camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            camera.position.set(0, 14, 0);
+            camera.position.set(0, 15, 0);
             camera.lookAt(0, 0, 0);
             camera.near = 0.1f;
             camera.far = 300;
             camera.update();
         }
         return camera;
+    }
+
+    public static void setCamera(float x, float y, float z) {
+        Global.getCamera().position.set(x, y, z);
+        Global.getCamera().lookAt(0, 0, 0);
+        Global.getCamera().up.set(Vector3.Y);
+        Global.getCamera().update();
     }
 
     public static CameraInputController getCameraController() {

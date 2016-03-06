@@ -63,10 +63,13 @@ public class ModelFactory {
         return modelBuilder.createBox(width, height, depth, new Material(ColorAttribute.createDiffuse(Color.OLIVE)), Usage.Position | Usage.Normal);
     }
 
+    public static Model getXYZCoordinates(float size) {
+        return modelBuilder.createXYZCoordinates(size, new Material(ColorAttribute.createDiffuse(Color.OLIVE)), Usage.Position | Usage.Normal);
+    }
+
     public static Model getConcaveModel() {
         Model m = modelBuilder.createBox(3, 3, 3, new Material(ColorAttribute.createDiffuse(Color.OLIVE)), Usage.Position | Usage.Normal);
         Model m2 = modelBuilder.createBox(2, 20, 2, new Material(ColorAttribute.createDiffuse(Color.OLIVE)), Usage.Position | Usage.Normal);
-
 
         modelBuilder.begin();
         MeshPartBuilder meshPartBuilder = modelBuilder.part("part1", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal, new Material(ColorAttribute.createDiffuse(Color.OLIVE)));
