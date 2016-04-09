@@ -18,13 +18,29 @@ import com.badlogic.gdx.math.Vector3;
 public class ModelFactory {
 
     private static final ModelBuilder modelBuilder = new ModelBuilder();
+    private static Model cube;
+    private static Model sphere;
+
+    public static Model getTheSameCubeModel(float size) {
+        if (cube == null) {
+            cube = getCubeModel(size);
+        }
+        return cube;
+    }
 
     public static Model getCubeModel(float size) {
         return modelBuilder.createBox(size, size, size, new Material(ColorAttribute.createDiffuse(Color.BLUE)), Usage.Position | Usage.Normal);
     }
+    
+    public static Model getTheSameSphereModel(float size) {
+        if (sphere == null) {
+            sphere = getSphereModel(size);
+        }
+        return sphere;
+    }
 
     public static Model getSphereModel(float size) {
-        return modelBuilder.createSphere(size, size, size, 10, 10, new Material(ColorAttribute.createDiffuse(Color.GREEN)), Usage.Position | Usage.Normal);
+        return getSphereModel(size, 10);
     }
 
     public static Model getSphereModel(float size, int divisions) {

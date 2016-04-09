@@ -34,17 +34,19 @@ public class DebugKeyListener implements InputProcessor {
     private final Ray ray = new Ray(Vector3.Zero, Vector3.Zero);
     
     @Override
-    public boolean keyDown(int i) {
-        switch (i) {
+    public boolean keyDown(int key) {
+        switch (key) {
             case Keys.F1:
+                // grid
                 if (grid == null) {
-                    grid = WorldSetupUtil.addGrid(100);
+                    grid = WorldSetupUtil.addGrid(50);
                 } else {
                     Engine.garbageManager.markForDeletion(grid);
                     grid = null;
                 }
                 break;
             case Keys.F2:
+                // mouse
                 debugMouse = !debugMouse;
                 if (debugMouse && mouse == null) {
                     ray.set(Global.getCamera().getPickRay(Gdx.input.getX(), Gdx.input.getY()));
@@ -60,14 +62,17 @@ public class DebugKeyListener implements InputProcessor {
                 }
                 break;
             case Keys.F3:
+                // frustrum culling
                 Global.DEBUG_FRUSTRUM_CULLING_SHAPES = !Global.DEBUG_FRUSTRUM_CULLING_SHAPES;
                 System.out.println("DEBUG_FRUSTRUM_CULLING_SHAPES = " + Global.DEBUG_FRUSTRUM_CULLING_SHAPES);
                 break;
             case Keys.F4:
+                // rotation
                 Global.DEBUG_ROTATION = !Global.DEBUG_ROTATION;
                 System.out.println("DEBUG_ROTATION = " + Global.DEBUG_ROTATION);
                 break;
             case Keys.F5:
+                // shadow
                 Global.SHADOW = !Global.SHADOW;
                 if (!Global.SHADOW) {
                     Global.getEnvironment().shadowMap = null;
@@ -77,10 +82,12 @@ public class DebugKeyListener implements InputProcessor {
                 System.out.println("SHADOW = " + Global.SHADOW);
                 break;
             case Keys.F6:
+                // physics
                 Global.DEBUG_PHYSICS = !Global.DEBUG_PHYSICS;
                 System.out.println("DEBUG_PHYSICS = " + Global.DEBUG_PHYSICS);
                 break;
             case Keys.F7:
+                // boost
                 Global.BOOST = !Global.BOOST;
                 break;
             case Keys.F8:
@@ -88,7 +95,8 @@ public class DebugKeyListener implements InputProcessor {
                 System.out.println("SYNC_KEYBOARD_CAM_ROTATION = " + Global.SYNC_KEYBOARD_CAM_ROTATION);
                 break;
             case Keys.C:
-                WorldSetupUtil.addRandomPhysicsObject(1, 10);
+                // add random physics object
+                WorldSetupUtil.addRandomPhysicsObject(10, 10);
                 break;
             case Keys.T:
                 WorldSetupUtil.addRandomTree();

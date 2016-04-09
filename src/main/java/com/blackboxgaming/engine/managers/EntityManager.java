@@ -6,7 +6,9 @@ import com.blackboxgaming.engine.components.*;
 import com.blackboxgaming.engine.components.ai.Follow;
 import com.blackboxgaming.engine.systems.*;
 import com.blackboxgaming.engine.systems.ai.FollowSystem;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -66,6 +68,9 @@ public class EntityManager {
             if (Engine.systemManager.has(AbyssSystem.class)) {
                 Engine.systemManager.get(AbyssSystem.class).add(entity);
             }
+            if (entity.has(Animation.class) && Engine.systemManager.has(AnimationSystem.class)) {
+                Engine.systemManager.get(AnimationSystem.class).add(entity);
+            }
         }
 
         // velocity
@@ -81,7 +86,7 @@ public class EntityManager {
                 Engine.systemManager.get(PuppetMoverSystem.class).add(entity);
             }
         }
-                
+
         if (entity.has(Puppet.class) && entity.has(Velocity.class) && entity.has(Transform.class) && entity.has(Speed.class)) {
             if (Engine.systemManager.has(PlaneMoverSystem.class)) {
                 Engine.systemManager.get(PlaneMoverSystem.class).add(entity);
@@ -127,6 +132,9 @@ public class EntityManager {
             if (Engine.systemManager.has(HealthSystem.class)) {
                 Engine.systemManager.get(HealthSystem.class).add(entity);
             }
+            if (Engine.systemManager.has(HealthBarRendererSystem.class)) {
+                Engine.systemManager.get(HealthBarRendererSystem.class).add(entity);
+            }
         }
 
         // parent/child 
@@ -170,12 +178,23 @@ public class EntityManager {
                 Engine.systemManager.get(FollowSystem.class).add(entity);
             }
         }
-        
+
         // restrict
         if (entity.has(RestrictMotion.class)) {
             if (Engine.systemManager.has(RestrictMotionSystem.class)) {
                 Engine.systemManager.get(RestrictMotionSystem.class).add(entity);
             }
         }
+
+        // conways game of life
+        if (entity.has(Cell.class)) {
+            if (Engine.systemManager.has(ConwaySystem.class)) {
+                Engine.systemManager.get(ConwaySystem.class).add(entity);
+            }
+        }
+    }
+
+    public List<Entity> getEntities() {
+        return new ArrayList(map.values());
     }
 }

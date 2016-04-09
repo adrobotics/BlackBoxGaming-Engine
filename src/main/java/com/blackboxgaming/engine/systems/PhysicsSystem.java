@@ -28,7 +28,7 @@ public class PhysicsSystem implements ISystem, Disposable {
     private Vector3 angularVelocity;
     public static ContactListener contactListener;
 
-    public PhysicsSystem(){
+    public PhysicsSystem() {
         Bullet.init();
         Global.getDynamicsWorld();
     }
@@ -81,13 +81,17 @@ public class PhysicsSystem implements ISystem, Disposable {
             }
         }
 
-        Global.performanceCounter.tick();
-        Global.performanceCounter.start();
+        if (Global.performanceCounter != null) {
+            Global.performanceCounter.tick();
+            Global.performanceCounter.start();
+        }
         Global.getDynamicsWorld().stepSimulation(Global.getDeltaInSeconds(), 5, 1f / 60f);
 //        Global.getDynamicsWorld().stepSimulation(Global.getDeltaInSeconds(), 2, 1f / 40f);
 //        Global.getDynamicsWorld().stepSimulation(Global.getDeltaInSeconds(), 10, 1f / 90f);
 //        Global.getDynamicsWorld().stepSimulation(Global.getDeltaInSeconds(), 25, 1f / 300f);
-        Global.performanceCounter.stop();
+        if (Global.performanceCounter != null) {
+            Global.performanceCounter.stop();
+        }
     }
 
     public int getCount() {
@@ -102,7 +106,9 @@ public class PhysicsSystem implements ISystem, Disposable {
             Global.getDynamicsWorld().removeRigidBody(body);
         }
         entities.clear();
-        contactListener.dispose();
+        if (contactListener != null) {
+            contactListener.dispose();
+        }
     }
 
 }

@@ -13,6 +13,11 @@ public class PlayerKeyListener extends InputAdapter {
     public static JoystickController joystickLeft = new JoystickController();
     public static JoystickController joystickRight = new JoystickController();
 
+    // anything
+    public static boolean anythingDown;
+    public static boolean keyDown;
+    public static boolean clickDown;
+    
     // mouse
     public static boolean clickLeft;
     public static boolean clickMiddle;
@@ -94,6 +99,8 @@ public class PlayerKeyListener extends InputAdapter {
     }
     
     private void keyChanged(int keycode, boolean value){
+        anythingDown = value;
+        keyDown = value;
         switch (keycode) {
             // wasd
             case forwardKey: forward = value; break;
@@ -121,6 +128,8 @@ public class PlayerKeyListener extends InputAdapter {
     }
     
     private void touchChanged(int button, boolean value){
+        anythingDown = value;
+        clickDown = value;
         switch (button) {
             case clickLeftButton: clickLeft = value; break;
             case clickMiddleButton: clickMiddle = value; break;

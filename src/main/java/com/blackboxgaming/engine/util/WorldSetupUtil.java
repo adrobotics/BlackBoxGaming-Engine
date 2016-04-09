@@ -53,6 +53,9 @@ public class WorldSetupUtil {
         Entity grid = new Entity();
         grid.add(new Transform(0, 0, 0));
         grid.add(new Model(ModelFactory.getGridModel((int) size)));
+        if (Engine.systemManager.has(PhysicsSystem.class)) {
+            grid.add(new Physics(CollisionShapeFactory.getBoxShape(50, 1, 50, new Vector3(0, -0.5f, 0)), 0, btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT, Constants.GROUND_FLAG, (short) 0, Collision.DISABLE_DEACTIVATION));
+        }
         Engine.entityManager.add(grid);
         return grid;
     }
@@ -166,10 +169,8 @@ public class WorldSetupUtil {
             for (int i = 0; i < n; i++) {
                 float randomSize = MathUtils.random(0.5f, 2);
                 Entity entity = new Entity();
-                entity.add(new Transform(MathUtils.random(-spread, spread), 30, MathUtils.random(-spread, spread), MathUtils.random(360), MathUtils.random(360), MathUtils.random(360)));
+                entity.add(new Transform(MathUtils.random(-spread, spread), 15, MathUtils.random(-spread, spread), MathUtils.random(360), MathUtils.random(360), MathUtils.random(360)));
                 entity.add(new Model(Randomizer.getRandomModel(randomSize), Randomizer.getRandomColor()));
-                entity.add(new Shadow());
-                entity.add(new Health(20));
                 entity.add(new Physics(CollisionShapeFactory.getCollisionShape(Randomizer.getMatchingCollisionShapeName(), randomSize), MathUtils.random(1f, 250), btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK, Constants.OBJECT_FLAG, Constants.GROUND_FLAG, Collision.ACTIVE_TAG));
                 Engine.entityManager.add(entity);
             }
@@ -183,7 +184,7 @@ public class WorldSetupUtil {
             int randTreeIndex = MathUtils.random(2);
             modelEntity = new Entity();
             modelEntity.add(new Transform(MathUtils.random(-50, 50), 0, MathUtils.random(-50, 50), MathUtils.random(0, 360), 0, 0));
-            modelEntity.add(new Model(Engine.assetManager.getTreeModel(trees[randTreeIndex]), true));
+            modelEntity.add(new Model(Engine.assetManager.getModel("trees/" + trees[randTreeIndex]), true));
             modelEntity.add(new Shadow());
             modelEntity.add(new Physics(CollisionShapeFactory.getTreeCollisionShape(trees[randTreeIndex]), 0, btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT, Constants.GROUND_FLAG, (short) 0, Collision.DISABLE_DEACTIVATION));
             Engine.entityManager.add(modelEntity);
@@ -217,7 +218,7 @@ public class WorldSetupUtil {
     }
 
     public static void addObjModel(String modelName) {
-        Engine.assetManager.addModel(modelName + ".g3db");
+        Engine.assetManager.loadModel(modelName + ".g3db");
         com.badlogic.gdx.graphics.g3d.Model model = Engine.assetManager.getModel(modelName);
         Entity modelEntity = new Entity();
         modelEntity.add(new Transform());
@@ -234,7 +235,7 @@ public class WorldSetupUtil {
             int randTreeIndex = MathUtils.random(2);
             modelEntity = new Entity();
             modelEntity.add(new Transform(MathUtils.random(-50, 50), 0, MathUtils.random(-50, 50), MathUtils.random(0, 360), 0, 0));
-            modelEntity.add(new Model(Engine.assetManager.getTreeModel(trees[randTreeIndex]), true));
+            modelEntity.add(new Model(Engine.assetManager.getModel("trees/" + trees[randTreeIndex]), true));
             modelEntity.add(new Shadow());
             modelEntity.add(new Physics(CollisionShapeFactory.getTreeCollisionShape(trees[randTreeIndex]), 0, btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT, Constants.GROUND_FLAG, (short) 0, Collision.DISABLE_DEACTIVATION));
             Engine.entityManager.add(modelEntity);
@@ -318,7 +319,7 @@ public class WorldSetupUtil {
         controlEntity.add(LayerFactory.createJoystickControlLayer());
         Engine.systemManager.get(LayerRendererSystem.class).add(controlEntity);
     }
-    
+
     public static void addTopLayer() {
         Entity top = new Entity();
         top.add(LayerFactory.createLevelAndHealthLayer());
@@ -335,7 +336,7 @@ public class WorldSetupUtil {
             boss.add(new Enemy());
             boss.add(new Shadow());
             boss.add(new Velocity(2.5f, 0, 0));
-//        enemy.add(new Physics(CollisionShapeFactory.getCubeShape(3), 5, btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK, Constants.OBJECT_FLAG, Constants.ALL_FLAG, Collision.ACTIVE_TAG));
+            boss.add(new Physics(CollisionShapeFactory.getCubeShape(3), 5, btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK, Constants.OBJECT_FLAG, Constants.ALL_FLAG, Collision.ACTIVE_TAG));
             boss.add(new Physics2D(CollisionShapeFactory2D.getBoxShape(1.5f, 1.5f), BodyType.DynamicBody, 5, boss.get(Transform.class).transform, false));
 
             Parent parent = new Parent(true);
@@ -387,7 +388,7 @@ public class WorldSetupUtil {
         }
     }
 
-    private static Entity createWeapon(Entity parent, int weaponType, Vector3 relativePositionToParent) {
+    public static Entity createWeapon(Entity parent, int weaponType, Vector3 relativePositionToParent) {
         Entity entity = new Entity();
         entity.add(new Transform());
         entity.add(new Model(ModelFactory.getBoxModel(1.5f, 0.125f, 0.125f)));
@@ -590,7 +591,7 @@ public class WorldSetupUtil {
 
                     bricks.add(createBrick(brickModelLong, brickDepth, brickHeight, brickWidth, x + offest + brickWidth / 2f + brickDepth / 2f + brickWidth * j, y + brickHeight / 2f + brickHeight * i, z + offest));
                     bricks.add(createBrick(brickModelLong, brickDepth, brickHeight, brickWidth, x + offest + brickWidth / 2f - brickDepth / 2f + brickWidth * j, y + brickHeight / 2f + brickHeight * i, z + -offest));
-                }else{
+                } else {
                     bricks.add(createBrick(brickModelWide, brickWidth, brickHeight, brickDepth, x + offest, y + brickHeight / 2f + brickHeight * i, z + offest + brickWidth / 2f - brickDepth / 2f + brickWidth * j + brickDepth));
                     bricks.add(createBrick(brickModelWide, brickWidth, brickHeight, brickDepth, x + -offest, y + brickHeight / 2f + brickHeight * i, z + offest + brickWidth / 2f + brickDepth / 2f + brickWidth * j - brickDepth));
 

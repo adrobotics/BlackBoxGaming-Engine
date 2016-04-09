@@ -79,10 +79,10 @@ public class WeaponFactory {
 
     private static Weapon createMelee(Matrix4 nozzle) {
         Weapon weapon = new Weapon(WEAPON_MELEE, nozzle);
-        weapon.damage = 2.5f;
+        weapon.damage = 5.0f;
         weapon.fireRate = 250;
         weapon.range = 2;
-        weapon.nozzleFireModel = new Model(ModelFactory.getBoxModel(0.25f, 1.25f, 1.25f), Color.RED);
+        weapon.nozzleFireModel = new Model(ModelFactory.getBoxModel(0.25f, 0.75f, 0.75f), Color.RED);
         weapon.nozzleFireModel.someoneElseHandlesDisposing = true;
         return weapon;
     }

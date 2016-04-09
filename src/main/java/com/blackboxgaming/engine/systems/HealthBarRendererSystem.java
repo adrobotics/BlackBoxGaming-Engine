@@ -153,9 +153,15 @@ public class HealthBarRendererSystem implements ISystem, Disposable {
     public void dispose() {
         System.out.println("Disposing " + this.getClass());
         entities.clear();
-        backPlate.model.dispose();
-        frontPlate.model.dispose();
-        shapeRenderer.dispose();
+        if (backPlate != null && backPlate.model != null) {
+            backPlate.model.dispose();
+        }
+        if (frontPlate != null && frontPlate.model != null) {
+            frontPlate.model.dispose();
+        }
+        if (shapeRenderer != null) {
+            shapeRenderer.dispose();
+        }
     }
 
 }

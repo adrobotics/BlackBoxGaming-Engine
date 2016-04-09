@@ -50,6 +50,8 @@ public class ModelRendererSystem implements ISystem, Disposable {
     private DebugDrawer debugDrawer;
     private Box2DDebugRenderer debugDrawer2D;
     private ModelInstance frustrumSphere;
+    private ModelInstance boundingBoxModel;
+    private BoundingBox boundingBox;
     private ModelInstance arrowModel;
     private Matrix4 transform;
     private ModelInstance modelInstance;
@@ -60,11 +62,6 @@ public class ModelRendererSystem implements ISystem, Disposable {
     public void add(Entity entity) {
         if (!entities.contains(entity)) {
             entities.add(entity);
-            if (entity.has(Health.class)) {
-                if (Engine.systemManager.has(HealthBarRendererSystem.class)) {
-                    Engine.systemManager.get(HealthBarRendererSystem.class).add(entity);
-                }
-            }
         }
     }
 
@@ -80,6 +77,7 @@ public class ModelRendererSystem implements ISystem, Disposable {
         for (Entity entity : entities) {
             transform = entity.get(Transform.class).transform;
             modelInstance = entity.get(Model.class).modelInstance;
+            boundingBox = entity.get(Model.class).boundingBox;
             castShadow = (Global.SHADOW && entity.has(Shadow.class));
 
             if (Global.FRUSTRUM_CULLING) {
@@ -105,6 +103,15 @@ public class ModelRendererSystem implements ISystem, Disposable {
                         frustrumSphere = new ModelInstance(g3dModel);
                         frustrumSphere.transform.trn(transform.getTranslation(Vector3.Zero));
                         renderables.add(frustrumSphere);
+                    }
+                    if (Global.DEBUG_BOUNGING_BOX_SHAPES) {
+                        Vector3 dimentions = new Vector3();
+                        boundingBox.getDimensions(dimentions);
+                        com.badlogic.gdx.graphics.g3d.Model g3dModel = modelBuilder.createBox(dimentions.x, dimentions.y, dimentions.z, GL20.GL_LINES, new Material(ColorAttribute.createDiffuse(Color.RED)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+                        toBeDisposedModels.add(g3dModel);
+                        boundingBoxModel = new ModelInstance(g3dModel);
+                        boundingBoxModel.transform.trn(transform.getTranslation(Vector3.Zero));
+                        renderables.add(boundingBoxModel);
                     }
                 }
             } else {

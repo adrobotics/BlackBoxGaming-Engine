@@ -1,8 +1,16 @@
 package com.blackboxgaming.engine.managers;
 
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.utils.Disposable;
+import com.blackboxgaming.engine.Engine;
+import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  *
@@ -11,8 +19,7 @@ import java.util.List;
 public class AssetManager implements Disposable {
 
     public final com.badlogic.gdx.assets.AssetManager assetManager = new com.badlogic.gdx.assets.AssetManager();
-    private boolean waitOnLoad;
-    private final List<String> assetList = new ArrayList();
+    private final Map<String, com.badlogic.gdx.graphics.g3d.Model> assets = new HashMap();
     public static final String pathToModels = "models/";
     public static final String pathToSounds = "sounds/";
     public static final String pathToTrees = pathToModels + "trees/";
@@ -21,76 +28,77 @@ public class AssetManager implements Disposable {
     public static final String pathToBoxes = pathToModels + "boxes/";
 
     public AssetManager() {
-        this(true);
     }
 
-    public AssetManager(boolean waitOnLoad) {
-        this.waitOnLoad = waitOnLoad;
-    }
-
+    /**
+     * Loads default models
+     */
     public void init() {
-//        assetList.add(pathToTrees + "bigtooth_aspen.g3db");
-//        assetList.add(pathToTrees + "black_spruce.g3db");
-//        assetList.add(pathToTrees + "tree.g3db");
-//        assetList.add(pathToTrees + "tree1.g3db");
-//        assetList.add(pathToTrees + "tree2.g3db");
-//        assetList.add(pathToTrees + "tree3.g3db");
-//        assetList.add(pathToTrees + "rock1.g3db");
-//        assetList.add(pathToTrees + "rock2.g3db");
-//        assetList.add(pathToTrees + "rock3.g3db");
-        assetList.add(pathToModels + "sky_box1.g3db");
-//        assetList.add(pathToGround + "ground.g3db");
-//        assetList.add(pathToMonsters + "Zombie2.g3db");
-//        assetList.add(pathToModels + "Box.g3db");
-        assetList.add(pathToBoxes + "box.g3db");
-        assetList.add(pathToBoxes + "box2.g3db");
-        assetList.add(pathToBoxes + "box2physics.g3db");
-        assetList.add(pathToBoxes + "box2min.g3db");
-        assetList.add(pathToBoxes + "box2minhole.g3db");
-
-        System.out.println(this.getClass() + " loading " + assetList.size() + " models");
+        assets.put(pathToModels + "knight/knight.g3db", null);
+        assets.put(pathToModels + "knight/repo/knight.g3db", null);
+        assets.put(pathToModels + "deer/deer.g3db", null);
+        System.out.println(this.getClass() + " loading " + assets.size() + " models");
         long start = System.currentTimeMillis();
-
-        for (String asset : assetList) {
-            assetManager.load(asset, com.badlogic.gdx.graphics.g3d.Model.class);
+        for (Map.Entry<String, Model> entrySet : assets.entrySet()) {
+            String modelName = entrySet.getKey();
+            assetManager.load(modelName, com.badlogic.gdx.graphics.g3d.Model.class);
         }
-        if (waitOnLoad) {
-            updateAssetManager();
-        }
-
+        updateAssetManager();
         long stop = System.currentTimeMillis();
         System.out.println(this.getClass() + " loading took " + (stop - start) / 1000f + " sec");
     }
 
-    public void addModel(String filename) {
-        addModel(filename, true);
-    }
-
-    public void addModel(String filename, boolean update) {
-        System.out.println(this.getClass() + " loading " + filename);
-        long start = System.currentTimeMillis();
-        assetList.add(pathToModels + filename);
-        assetManager.load(pathToModels + filename, com.badlogic.gdx.graphics.g3d.Model.class);
-        if (update) {
-            updateAssetManager();
+    /**
+     * Loads and adds a new model to the asset manager. Model can be retrieved via {@link #getModel}
+     *
+     * @param modelName Name and path relative to models directory, ex: knight/knight.g3db
+     */
+    public void loadModel(String modelName) {
+        if (modelName == null || modelName.isEmpty()) {
+            System.out.println("Can't load model from null or empty modelName");
+            return;
         }
+        modelName = pathToModels + modelName;
+        if (AssetManager.class.getClassLoader().getResource("assets/" + modelName) == null) {
+            System.out.println("Model " + modelName + " does not exist");
+            return;
+        }
+        System.out.print(this.getClass() + " loading " + modelName);
+        long start = System.currentTimeMillis();
+        assets.put(modelName, null);
+        assetManager.load(modelName, com.badlogic.gdx.graphics.g3d.Model.class);
+        updateAssetManager();
         long stop = System.currentTimeMillis();
-        System.out.println(this.getClass() + " loading took " + (stop - start) / 1000f + " sec");
+        System.out.println(" took " + (stop - start) / 1000f + " sec");
     }
 
+    /**
+     * Retrieves an already loaded model from the asset manager. Load models via {@link addModel#loadModel}
+     *
+     * @param modelName Name and path relative to models directory, ex: knight/knight.g3db
+     * @return The model
+     */
     public com.badlogic.gdx.graphics.g3d.Model getModel(String modelName) {
-        return assetManager.get(pathToModels + modelName + ".g3db", com.badlogic.gdx.graphics.g3d.Model.class);
+        modelName = pathToModels + modelName;
+        if (!assets.containsKey(modelName)) {
+            System.out.println("Model not yet loaded");
+            return null;
+        }
+        com.badlogic.gdx.graphics.g3d.Model model = assetManager.get(modelName, com.badlogic.gdx.graphics.g3d.Model.class);
+        if (assets.get(modelName) == null) {
+            assets.put(modelName, model);
+        }
+        Set<String> animationIds = new TreeSet();
+        for (int i = 0; i < model.animations.size; i++) {
+            animationIds.add(model.animations.get(i).id);
+        }
+        if (!animationIds.isEmpty()) {
+            System.out.println("Model " + modelName + " has the following animations " + animationIds);
+        }
+        return model;
     }
 
-    public com.badlogic.gdx.graphics.g3d.Model getTreeModel(String modelName) {
-        return assetManager.get(pathToTrees + modelName + ".g3db", com.badlogic.gdx.graphics.g3d.Model.class);
-    }
-
-    public com.badlogic.gdx.graphics.g3d.Model getMonsterModel(String modelName) {
-        return assetManager.get(pathToMonsters + modelName + ".g3db", com.badlogic.gdx.graphics.g3d.Model.class);
-    }
-
-    public void updateAssetManager() {
+    private void updateAssetManager() {
         while (!assetManager.update()) {
         }
     }
@@ -103,7 +111,7 @@ public class AssetManager implements Disposable {
         } catch (IllegalArgumentException ex) {
             System.out.println("very illegal argument, much error");
         }
-        assetList.clear();
+        assets.clear();
     }
 
 }

@@ -22,4 +22,9 @@ public class HUDItem implements IComponent {
         this.updateable = updateable;
     }
 
+    @Override
+    public String toString() {
+        return "HUDItem{" + "name=" + name + '}';
+    }
+
 }

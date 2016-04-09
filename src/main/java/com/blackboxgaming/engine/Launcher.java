@@ -15,10 +15,12 @@ class Launcher {
     public static void main(String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.title = "BlackBoxGaming-Engine";
-        config.foregroundFPS = 0;
+        config.foregroundFPS = 60;
         config.backgroundFPS = -1;
-        config.width = 640;
-        config.height = 480;
+        config.width = 1280;
+//        config.width = 640;
+        config.height = 800;
+//        config.height = 480;
         config.vSyncEnabled = false;
         LwjglApplication app = new LwjglApplication(new BlackBoxGame(), config);
     }

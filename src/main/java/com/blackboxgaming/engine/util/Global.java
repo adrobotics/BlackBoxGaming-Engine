@@ -51,6 +51,7 @@ public class Global {
 
     // debug
     public static boolean DEBUG_FRUSTRUM_CULLING_SHAPES = false;
+    public static boolean DEBUG_BOUNGING_BOX_SHAPES = false;
     public static boolean DEBUG_ROTATION = false;
     public static boolean DEBUG_PHYSICS = false;
     public static boolean SHADOW = false;
@@ -58,7 +59,7 @@ public class Global {
 
     public static Entity mainCharacter;
 
-    public static boolean SYNC_KEYBOARD_CAM_ROTATION = true;
+    public static boolean SYNC_KEYBOARD_CAM_ROTATION = false;
 
     // pysics
     public static final List<Integer> PHYSICS_CONTACT_GROUP_WALL = new ArrayList();
@@ -121,7 +122,7 @@ public class Global {
     public static String gameScreen = "game";
 
     private static Vector3 lightDirection = new Vector3(0.5f, -0.75f, -0.25f);
-    public static boolean hideMaxHealth = true;
+    public static boolean hideMaxHealth = false;
     public static long lastPrint;
     public static Label BRICK_LABEL;
     public static Image swipeIcon;

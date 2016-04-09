@@ -71,7 +71,7 @@ public class HUDSystem implements ISystem, Disposable {
         stage.addActor(table);
         stage.draw();
     }
-    
+
     private void updateValues(Entity entity, HUDItem item) {
         String value = item.value;
         switch (item.name.toLowerCase()) {
@@ -124,6 +124,13 @@ public class HUDSystem implements ISystem, Disposable {
                 break;
             case "vertices":
                 value = "" + GLProfiler.vertexCount.total;
+                break;
+            case "conway":
+                if (Engine.systemManager.has(ConwaySystem.class)) {
+                    value = "" + !Engine.systemManager.get(ConwaySystem.class).manualBreak;
+                } else {
+                    value = "" + false;
+                }
                 break;
         }
         item.value = value;
