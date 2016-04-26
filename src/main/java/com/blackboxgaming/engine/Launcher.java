@@ -22,6 +22,8 @@ class Launcher {
         config.height = 800;
 //        config.height = 480;
         config.vSyncEnabled = false;
+        config.x = -1;
+        config.y = 10;
         LwjglApplication app = new LwjglApplication(new BlackBoxGame(), config);
     }
 }

@@ -35,6 +35,7 @@ public class ConwaySystem implements ISystem, Disposable, Runnable {
     public boolean manualBreak = true;
     private Set<Entity> toBeAdded = new HashSet();
     private Set<Entity> toBeRemoved = new HashSet();
+    private int generation = 1;
 
     public ConwaySystem(Rule rule) {
         this(rule, 0);
@@ -57,17 +58,17 @@ public class ConwaySystem implements ISystem, Disposable, Runnable {
 
     public void update2(float delta) {
 //        if (!manualBreak && !generating && lastRun + timeBetweenRuns - timeSpent < System.currentTimeMillis()) {
-            for (Entity entity : toBeAdded) {
-                Engine.entityManager.add(entity);
-            }
-            for (Entity entity : toBeRemoved) {
-                Engine.garbageManager.markForDeletion(entity);
-            }
-            toBeAdded.clear();
-            toBeRemoved.clear();
-            lastRun = System.currentTimeMillis();
+        for (Entity entity : toBeAdded) {
+            Engine.entityManager.add(entity);
+        }
+        for (Entity entity : toBeRemoved) {
+            Engine.garbageManager.markForDeletion(entity);
+        }
+        toBeAdded.clear();
+        toBeRemoved.clear();
+        lastRun = System.currentTimeMillis();
 //            generating = true;
-            new Thread(this).start();
+        new Thread(this).start();
 //        }
     }
 
@@ -80,6 +81,7 @@ public class ConwaySystem implements ISystem, Disposable, Runnable {
             toBeRemoved.clear();
 
             nextGeneration();
+            generation++;
 
             for (Entity entity : toBeAdded) {
                 Engine.entityManager.add(entity);
@@ -149,4 +151,7 @@ public class ConwaySystem implements ISystem, Disposable, Runnable {
         nextGeneration.clear();
     }
 
+    public int getGeneration() {
+        return generation;
+    }
 }

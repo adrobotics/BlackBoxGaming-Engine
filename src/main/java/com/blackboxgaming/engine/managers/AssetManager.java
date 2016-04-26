@@ -34,9 +34,9 @@ public class AssetManager implements Disposable {
      * Loads default models
      */
     public void init() {
-        assets.put(pathToModels + "knight/knight.g3db", null);
-        assets.put(pathToModels + "knight/repo/knight.g3db", null);
-        assets.put(pathToModels + "deer/deer.g3db", null);
+//        assets.put(pathToModels + "knight/knight.g3db", null);
+//        assets.put(pathToModels + "knight/repo/knight.g3db", null);
+//        assets.put(pathToModels + "deer/deer.g3db", null);
         System.out.println(this.getClass() + " loading " + assets.size() + " models");
         long start = System.currentTimeMillis();
         for (Map.Entry<String, Model> entrySet : assets.entrySet()) {

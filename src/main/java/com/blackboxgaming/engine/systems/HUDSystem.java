@@ -132,6 +132,13 @@ public class HUDSystem implements ISystem, Disposable {
                     value = "" + false;
                 }
                 break;
+            case "generation":
+                if (Engine.systemManager.has(ConwaySystem.class)) {
+                    value = "" + Engine.systemManager.get(ConwaySystem.class).getGeneration();
+                } else {
+                    value = "";
+                }
+                break;
         }
         item.value = value;
     }

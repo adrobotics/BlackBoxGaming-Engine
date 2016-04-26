@@ -159,6 +159,15 @@ public class DemoKeyListener implements InputProcessor {
                 Engine.systemManager.add(new WeaponSystem());
                 WorldSetupUtil.addBossEnemies(25, 10);
                 break;
+            case Keys.NUM_9:
+                System.out.println("Adding dragon");
+                Engine.assetManager.init();
+                Engine.assetManager.loadModel("dragon/dragon.g3db");
+                Entity dragon = new Entity();
+                dragon.add(new Transform());
+                dragon.add(new Model(Engine.assetManager.getModel("dragon/dragon.g3db")));
+                Engine.entityManager.add(dragon);
+                break;
         }
         return false;
     }

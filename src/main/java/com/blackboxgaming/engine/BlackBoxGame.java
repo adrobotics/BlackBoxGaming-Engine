@@ -75,6 +75,8 @@ public class BlackBoxGame extends ApplicationAdapter {
             hudItem.add(new HUDItem("Entities", "", "", true));
             Engine.entityManager.add(hudItem);
             hudItem = new Entity();
+            hudItem.add(new HUDItem("Generation", "", "", true));
+            Engine.entityManager.add(hudItem);
             hudItem.add(new HUDItem("Conway", "", "", true));
             Engine.entityManager.add(hudItem);
         }
