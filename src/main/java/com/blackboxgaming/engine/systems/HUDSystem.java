@@ -7,46 +7,45 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Disposable;
 import com.blackboxgaming.engine.Engine;
 import com.blackboxgaming.engine.components.HUDItem;
 import com.blackboxgaming.engine.Entity;
-import com.blackboxgaming.engine.components.Puppet;
 import com.blackboxgaming.engine.util.Global;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
 
 /**
+ * This system updates and draws {@link HUDItems}.
  *
  * @author Adrian
  */
-public class HUDSystem implements ISystem, Disposable {
+public class HUDSystem extends AbstractSystem {
 
-    private final List<Entity> entities = new ArrayList();
-    private final Stage stage;
-    private final Table table;
-    private final BitmapFont font;
+    private final Stage stage = new Stage();
+    private final Table table = new Table().padLeft(10).padBottom(10);
+    private final BitmapFont font = new BitmapFont();
     private final Color fontColor = Color.RED;
     private final StringBuilder stringBuilder = new StringBuilder();
     private HUDItem hudItem;
     private Label label;
 
     public HUDSystem() {
-        this.font = new BitmapFont();
-        this.table = new Table().padLeft(10).padBottom(10);
-        this.stage = new Stage();
+        entities = new LinkedHashSet();
+        requiredComponents.add(HUDItem.class);
     }
 
     @Override
-    public void add(Entity e) {
-        if (!entities.contains(e)) {
-            entities.add(e);
+    public void add(Entity entity) {
+        if (accept(entity) && !entities.contains(entity)) {
+            boolean duplicate = false;
+            for (Entity item : entities) {
+                if (item.get(HUDItem.class).label.equals(entity.get(HUDItem.class).label)) {
+                    duplicate = true;
+                }
+            }
+            if (!duplicate) {
+                entities.add(entity);
+            }
         }
-    }
-
-    @Override
-    public void remove(Entity entity) {
-        entities.remove(entity);
     }
 
     @Override
@@ -56,11 +55,9 @@ public class HUDSystem implements ISystem, Disposable {
         //table.debug();
         for (Entity entity : entities) {
             hudItem = (HUDItem) entity.get(HUDItem.class);
-            if (hudItem.updateable) {
-                updateValues(entity, hudItem);
-            }
+            updateValues(entity, hudItem);
             stringBuilder.setLength(0);
-            stringBuilder.append(hudItem.name).append(": ").append(hudItem.value).append(" ").append(hudItem.unit);
+            stringBuilder.append(hudItem.label).append(": ").append(hudItem.value).append(" ").append(hudItem.unit);
             label = new Label(" ", new Label.LabelStyle(font, fontColor));
             label.setText(stringBuilder);
             label.setAlignment(Align.bottom | Align.left);
@@ -74,26 +71,9 @@ public class HUDSystem implements ISystem, Disposable {
 
     private void updateValues(Entity entity, HUDItem item) {
         String value = item.value;
-        switch (item.name.toLowerCase()) {
-//            case "rotation":
-//                Matrix4 matrix = new Matrix4();
-//                Gdx.input.getRotationMatrix(matrix.val);
-//                Quaternion q = matrix.getRotation(new Quaternion());
-//                value = "" + q.getPitch();
-//                break;
-            case "camera":
-                value = "" + String.format("%.2f", Global.getCamera().position.x)
-                        + ", " + String.format("%.2f", Global.getCamera().position.y)
-                        + ", " + String.format("%.2f", Global.getCamera().position.z);
-                break;
+        switch (item.label.toLowerCase()) {
             case "fps":
                 value = "" + Global.getFps();
-                break;
-            case "bullet val":
-                value = "" + String.format("%.2f", (Global.performanceCounter.load.value * 100f));
-                break;
-            case "bullet avg":
-                value = "" + String.format("%.2f", (Global.performanceCounter.load.average * 100f));
                 break;
             case "delta":
                 value = "" + Global.getDeltaInMillis();
@@ -101,14 +81,16 @@ public class HUDSystem implements ISystem, Disposable {
             case "entities":
                 value = "" + Engine.entityManager.getCount();
                 break;
-            case "frustrum":
+            case "visible":
                 value = "" + Global.VISIBLE_OBJECT_COUNT;
                 break;
             case "physics":
                 value = "" + (Engine.systemManager.has(PhysicsSystem.class) ? Engine.systemManager.get(PhysicsSystem.class).getCount() : "");
                 break;
-            case "isflying":
-                value = "" + entity.get(Puppet.class).isFlying;
+            case "camera":
+                value = "" + String.format("%.2f", Global.getCamera().position.x)
+                        + ", " + String.format("%.2f", Global.getCamera().position.y)
+                        + ", " + String.format("%.2f", Global.getCamera().position.z);
                 break;
             case "gl-calls":
                 value = "" + GLProfiler.calls;
@@ -125,13 +107,6 @@ public class HUDSystem implements ISystem, Disposable {
             case "vertices":
                 value = "" + GLProfiler.vertexCount.total;
                 break;
-            case "conway":
-                if (Engine.systemManager.has(ConwaySystem.class)) {
-                    value = "" + !Engine.systemManager.get(ConwaySystem.class).manualBreak;
-                } else {
-                    value = "" + false;
-                }
-                break;
             case "generation":
                 if (Engine.systemManager.has(ConwaySystem.class)) {
                     value = "" + Engine.systemManager.get(ConwaySystem.class).getGeneration();
@@ -145,8 +120,7 @@ public class HUDSystem implements ISystem, Disposable {
 
     @Override
     public void dispose() {
-        System.out.println("Disposing " + this.getClass());
-        entities.clear();
+        super.dispose();
         stringBuilder.setLength(0);
         font.dispose();
         table.clear();

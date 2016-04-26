@@ -2,7 +2,7 @@ package com.blackboxgaming.engine.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
@@ -15,7 +15,7 @@ import com.blackboxgaming.engine.components.Transform;
 import com.blackboxgaming.engine.factories.ModelFactory;
 import com.blackboxgaming.engine.systems.LevelProgressionSystem;
 import com.blackboxgaming.engine.util.Global;
-import com.blackboxgaming.engine.util.WorldSetupUtil;
+import com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -24,22 +24,24 @@ import java.util.ListIterator;
  *
  * @author Adrian
  */
-public class DebugKeyListener implements InputProcessor {
-    
+public class DebugKeyListener extends InputAdapter {
+
     private Entity grid;
     private Entity mouse;
     private boolean debugMouse = false;
     private final Vector3 x0zPoint = new Vector3();
     private final Plane x0zPlane = new Plane(new Vector3(0, 1, 0), new Vector3(0, 0, 0));
     private final Ray ray = new Ray(Vector3.Zero, Vector3.Zero);
-    
+    private List<Vector3> cameraPositions;
+    private ListIterator<Vector3> cameraPositionsIterator;
+
     @Override
     public boolean keyDown(int key) {
         switch (key) {
             case Keys.F1:
                 // grid
                 if (grid == null) {
-                    grid = WorldSetupUtil.addGrid(50);
+                    grid = OldButNotThatOldWorldSetup.addGrid(50);
                 } else {
                     Engine.garbageManager.markForDeletion(grid);
                     grid = null;
@@ -96,10 +98,10 @@ public class DebugKeyListener implements InputProcessor {
                 break;
             case Keys.C:
                 // add random physics object
-                WorldSetupUtil.addRandomPhysicsObject(10, 10);
+                OldButNotThatOldWorldSetup.addRandomPhysicsObject(10, 10);
                 break;
             case Keys.T:
-                WorldSetupUtil.addRandomTree();
+                OldButNotThatOldWorldSetup.addRandomTree();
                 break;
             case Keys.X:
                 if (Global.mainCharacter.has(Health.class)) {
@@ -125,32 +127,7 @@ public class DebugKeyListener implements InputProcessor {
         }
         return false;
     }
-    
-    @Override
-    public boolean keyUp(int i) {
-        return false;
-    }
-    
-    @Override
-    public boolean keyTyped(char c) {
-        return false;
-    }
-    
-    @Override
-    public boolean touchDown(int i, int i1, int i2, int button) {
-        return false;
-    }
-    
-    @Override
-    public boolean touchUp(int i, int i1, int i2, int button) {
-        return false;
-    }
-    
-    @Override
-    public boolean touchDragged(int i, int i1, int i2) {
-        return false;
-    }
-    
+
     @Override
     public boolean mouseMoved(int i, int j) {
         if (debugMouse && mouse != null) {
@@ -161,15 +138,7 @@ public class DebugKeyListener implements InputProcessor {
         }
         return false;
     }
-    
-    @Override
-    public boolean scrolled(int i) {
-        return false;
-    }
-    
-    private List<Vector3> cameraPositions;
-    private ListIterator<Vector3> cameraPositionsIterator;
-    
+
     private void cycleCamera() {
         if (cameraPositions == null) {
             cameraPositions = new ArrayList();
@@ -181,11 +150,11 @@ public class DebugKeyListener implements InputProcessor {
         if (!cameraPositionsIterator.hasNext()) {
             cameraPositionsIterator = cameraPositions.listIterator();
         }
-        
+
         Global.getCamera().position.set(cameraPositionsIterator.next());
         Global.getCamera().lookAt(0, 0, 0);
         Global.getCamera().up.set(Vector3.Y);
         Global.getCamera().update();
     }
-    
+
 }

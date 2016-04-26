@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.blackboxgaming.engine.Entity;
 import com.blackboxgaming.engine.util.Global;
-import com.blackboxgaming.engine.util.WorldSetupUtil;
+import com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,10 +38,10 @@ public class ObstacleSpawnerSystem implements ISystem, Disposable {
     public void update(float delta) {
         while (entities.size() < maxObstacles) {
             if (MathUtils.randomBoolean()) {
-                bricks.addAll(WorldSetupUtil.createWall(Global.boxWidth - Global.boxWidth / 6f, Global.boxLength / 4f, 8, 1));
+                bricks.addAll(OldButNotThatOldWorldSetup.createWall(Global.boxWidth - Global.boxWidth / 6f, Global.boxLength / 4f, 8, 1));
             } else {
-                bricks.addAll(WorldSetupUtil.createWallAroundPoint(2, 6, Global.boxLength / 4f, 0, 0));
-                bricks.addAll(WorldSetupUtil.createWallAroundPoint(4, 4, Global.boxLength / 4f, 0, 0));
+                bricks.addAll(OldButNotThatOldWorldSetup.createWallAroundPoint(2, 6, Global.boxLength / 4f, 0, 0));
+                bricks.addAll(OldButNotThatOldWorldSetup.createWallAroundPoint(4, 4, Global.boxLength / 4f, 0, 0));
             }
             for (Entity brick : bricks) {
                 entities.add(brick);

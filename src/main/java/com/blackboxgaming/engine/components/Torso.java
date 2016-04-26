@@ -6,6 +6,7 @@ import com.blackboxgaming.engine.Entity;
  *
  * @author Adrian
  */
+@Deprecated
 public class Torso implements IComponent {
 
     public final Entity torso;

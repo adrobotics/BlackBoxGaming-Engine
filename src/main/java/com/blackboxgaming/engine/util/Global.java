@@ -44,6 +44,7 @@ public class Global {
 
     public static boolean renderHealthBar = false;
     public static final float splashScreenTime = 3000;
+    @Deprecated
     public static boolean START_WITH_ANDROID_GESTURE_LISTENER = false;
     public static Button scoreButton;
     public static Label LEVEL_LABEL;
@@ -104,6 +105,7 @@ public class Global {
     public static boolean touchLeft;
     public static boolean touchRight;
     public static int glassId;
+    @Deprecated
     public static PerformanceCounter performanceCounter;
     public static boolean loopAmbientSound = false;
 

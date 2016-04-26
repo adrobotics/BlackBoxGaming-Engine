@@ -6,6 +6,7 @@ import com.blackboxgaming.engine.Entity;
 import com.blackboxgaming.engine.components.Cell;
 import com.blackboxgaming.engine.components.HUDItem;
 import com.blackboxgaming.engine.components.Model;
+import com.blackboxgaming.engine.components.Name;
 import com.blackboxgaming.engine.components.Transform;
 import com.blackboxgaming.engine.factories.ModelFactory;
 import com.blackboxgaming.engine.systems.conway.GenerationRezolver;
@@ -136,6 +137,7 @@ public class ConwaySystem implements ISystem, Disposable, Runnable {
             if (!universe.containsKey(cell)) {
                 Entity e = new Entity();
                 e.add(cell);
+                e.add(new Name("Cell"));
                 e.add(new Transform(cell.x, cell.y, cell.z));
                 e.add(new Model(ModelFactory.getTheSameCubeModel(1), Randomizer.getRandomColor(), true));
                 universe.put(cell, e);

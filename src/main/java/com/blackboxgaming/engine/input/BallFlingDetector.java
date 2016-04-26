@@ -12,12 +12,13 @@ import com.blackboxgaming.engine.components.Physics;
 import com.blackboxgaming.engine.components.Transform;
 import com.blackboxgaming.engine.systems.PhysicsSystem;
 import com.blackboxgaming.engine.util.Global;
-import com.blackboxgaming.engine.util.WorldSetupUtil;
+import com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup;
 
 /**
  *
  * @author Adrian
  */
+@Deprecated
 public class BallFlingDetector extends GestureDetector {
 
     public BallFlingDetector() {
@@ -49,7 +50,7 @@ class BallFlingAdaptor extends GestureAdapter {
     public boolean touchDown(float x, float y, int pointer, int button) {
         if (Intersector.intersectRayPlane(Global.getCamera().getPickRay(x, y), x0zPlane, intersection)) {
             if (isInsideCastArea(x, y)) {
-                ball = WorldSetupUtil.createBall(intersection.add(0, yLevel, 0));
+                ball = OldButNotThatOldWorldSetup.createBall(intersection.add(0, yLevel, 0));
             } else {
                 ball = null;
             }
@@ -60,7 +61,7 @@ class BallFlingAdaptor extends GestureAdapter {
     @Override
     public boolean tap(float x, float y, int count, int button) {
         if (ball != null && Engine.systemManager.has(PhysicsSystem.class)) {
-            ball.add(WorldSetupUtil.createBallPhysics());
+            ball.add(OldButNotThatOldWorldSetup.createBallPhysics());
             Engine.systemManager.get(PhysicsSystem.class).add(ball);
         }
         return false;
@@ -89,7 +90,7 @@ class BallFlingAdaptor extends GestureAdapter {
     @Override
     public boolean panStop(float x, float y, int pointer, int button) {
         if (ball != null && Engine.systemManager.has(PhysicsSystem.class)) {
-            ball.add(WorldSetupUtil.createBallPhysics());
+            ball.add(OldButNotThatOldWorldSetup.createBallPhysics());
             Engine.systemManager.get(PhysicsSystem.class).add(ball);
         }
         return false;
@@ -110,7 +111,7 @@ class BallFlingAdaptor extends GestureAdapter {
     @Override
     public boolean longPress(float x, float y) {
         if (ball != null && Engine.systemManager.has(PhysicsSystem.class)) {
-            ball.add(WorldSetupUtil.createBallPhysics());
+            ball.add(OldButNotThatOldWorldSetup.createBallPhysics());
             Engine.systemManager.get(PhysicsSystem.class).add(ball);
         }
         return false;

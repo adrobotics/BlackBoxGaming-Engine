@@ -2,61 +2,44 @@ package com.blackboxgaming.engine.systems;
 
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Disposable;
 import com.blackboxgaming.engine.components.Transform;
 import com.blackboxgaming.engine.components.Velocity;
 import com.blackboxgaming.engine.Entity;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
+ * This system translates an entities position and rotation by {@link Velocity}.
  *
  * @author Adrian
  */
-public class VelocitySystem implements ISystem, Disposable {
+public class VelocitySystem extends AbstractSystem {
 
-    private final List<Entity> entities = new ArrayList();
     private Matrix4 transform;
-    private Vector3 velocity;
-    private Vector3 angularVelocity;
+    private Vector3 linear;
+    private Vector3 angular;
 
-    @Override
-    public void add(Entity entity) {
-        if (!entities.contains(entity)) {
-            entities.add(entity);
-        }
-    }
-
-    @Override
-    public void remove(Entity entity) {
-        entities.remove(entity);
+    public VelocitySystem() {
+        requiredComponents.add(Velocity.class);
+        requiredComponents.add(Transform.class);
     }
 
     @Override
     public void update(float delta) {
         for (Entity entity : entities) {
             transform = entity.get(Transform.class).transform;
-            velocity = entity.get(Velocity.class).velocity;
-            angularVelocity = entity.get(Velocity.class).angularVelocity;
-            if (!velocity.isZero()) {
-                if (!entity.get(Velocity.class).trnFlag) {
-                    transform.translate(velocity.cpy().scl(delta));
-                } else {
-                    transform.trn(velocity.cpy().scl(delta));
-                }
+            linear = entity.get(Velocity.class).linear;
+            angular = entity.get(Velocity.class).angular;
+
+            // linear motion
+            if (!linear.isZero()) {
+                transform.translate(linear.cpy().scl(delta));
             }
-            if (!angularVelocity.isZero()) {
-                transform.rotate(Vector3.X, angularVelocity.x * delta);
-                transform.rotate(Vector3.Y, angularVelocity.y * delta);
-                transform.rotate(Vector3.Z, angularVelocity.z * delta);
+
+            // angular motion
+            if (!angular.isZero()) {
+                transform.rotate(Vector3.X, angular.x * delta);
+                transform.rotate(Vector3.Y, angular.y * delta);
+                transform.rotate(Vector3.Z, angular.z * delta);
             }
         }
     }
-
-    @Override
-    public void dispose() {
-        System.out.println("Disposing " + this.getClass());
-        entities.clear();
-    }
-
 }

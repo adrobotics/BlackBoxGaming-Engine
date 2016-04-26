@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.collision.ContactListener;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
-import com.badlogic.gdx.utils.Disposable;
 import com.blackboxgaming.engine.Entity;
 import com.blackboxgaming.engine.components.Physics;
 import com.blackboxgaming.engine.components.Puppet;
@@ -13,31 +12,34 @@ import com.blackboxgaming.engine.components.Transform;
 import com.blackboxgaming.engine.components.Velocity;
 import com.blackboxgaming.engine.input.PlayerKeyListener;
 import com.blackboxgaming.engine.util.Global;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
  * @author Adrian
  */
-public class PhysicsSystem implements ISystem, Disposable {
+public class PhysicsSystem extends AbstractSystem {
 
-    private final List<Entity> entities = new ArrayList();
     private Matrix4 transform;
-    private Vector3 velocity;
-    private Vector3 angularVelocity;
+    private Vector3 linear;
+    private Vector3 angular;
     public static ContactListener contactListener;
 
     public PhysicsSystem() {
+        requiredComponents.add(Physics.class);
+        requiredComponents.add(Transform.class);
         Bullet.init();
         Global.getDynamicsWorld();
     }
 
+    public int getCount() {
+        return entities.size();
+    }
+
     @Override
     public void add(Entity entity) {
-        if (!entities.contains(entity)) {
-            Matrix4 originalTransform = entity.get(Transform.class).transform;
+        if (accept(entity) && !entities.contains(entity)) {
             Physics physics = entity.get(Physics.class);
+            Matrix4 originalTransform = entity.get(Transform.class).transform;
             physics.setMotionState(originalTransform);
             physics.body.proceedToTransform(originalTransform);
             physics.body.setUserValue(entity.id);
@@ -51,9 +53,6 @@ public class PhysicsSystem implements ISystem, Disposable {
         if (entities.contains(entity)) {
             btRigidBody body = entity.get(Physics.class).body;
             Global.getDynamicsWorld().removeRigidBody(body);
-//            if (entity.has(Velocity.class) && Engine.systemManager.has(VelocitySystem.class)) {
-//                Engine.systemManager.get(VelocitySystem.class).add(entity);
-//            }
         }
         entities.remove(entity);
     }
@@ -63,39 +62,17 @@ public class PhysicsSystem implements ISystem, Disposable {
         for (Entity entity : entities) {
             if (entity.has(Velocity.class)) {
                 transform = entity.get(Transform.class).transform;
-                velocity = entity.get(Velocity.class).velocity;
-                angularVelocity = entity.get(Velocity.class).angularVelocity;
+                linear = entity.get(Velocity.class).linear;
+                angular = entity.get(Velocity.class).angular;
                 btRigidBody body = entity.get(Physics.class).body;
-
-//                if (!velocity.isZero()) {
-//                    transform.translate(velocity.cpy().scl(delta));
-//                }
-//                if (!angularVelocity.isZero()) {
-//                    transform.rotate(Vector3.X, angularVelocity.x * delta);
-//                    transform.rotate(Vector3.Y, angularVelocity.y * delta);
-//                    transform.rotate(Vector3.Z, angularVelocity.z * delta);
-//                }
-                if (!velocity.isZero() || !angularVelocity.isZero() || !PlayerKeyListener.joystickRight.joystick.isZero() || ((PlayerKeyListener.clickRight || PlayerKeyListener.clickMiddle) && entity.has(Puppet.class))) {
+                if (!linear.isZero() || !angular.isZero() || !PlayerKeyListener.joystickRight.joystick.isZero() || ((PlayerKeyListener.clickRight || PlayerKeyListener.clickMiddle) && entity.has(Puppet.class))) {
+                    // set physics body to current object position.
                     body.proceedToTransform(transform);
                 }
             }
         }
 
-        if (Global.performanceCounter != null) {
-            Global.performanceCounter.tick();
-            Global.performanceCounter.start();
-        }
         Global.getDynamicsWorld().stepSimulation(Global.getDeltaInSeconds(), 5, 1f / 60f);
-//        Global.getDynamicsWorld().stepSimulation(Global.getDeltaInSeconds(), 2, 1f / 40f);
-//        Global.getDynamicsWorld().stepSimulation(Global.getDeltaInSeconds(), 10, 1f / 90f);
-//        Global.getDynamicsWorld().stepSimulation(Global.getDeltaInSeconds(), 25, 1f / 300f);
-        if (Global.performanceCounter != null) {
-            Global.performanceCounter.stop();
-        }
-    }
-
-    public int getCount() {
-        return entities.size();
     }
 
     @Override

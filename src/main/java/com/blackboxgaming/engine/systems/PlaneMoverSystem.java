@@ -53,8 +53,8 @@ public class PlaneMoverSystem implements ISystem, Disposable {
             angVAux.setZero();
 
             transform = entity.get(Transform.class).transform;
-            velocity = entity.get(Velocity.class).velocity;
-            angularVelocity = entity.get(Velocity.class).angularVelocity;
+            velocity = entity.get(Velocity.class).linear;
+            angularVelocity = entity.get(Velocity.class).angular;
             speedComponent = entity.get(Speed.class);
             linearSpeed = speedComponent.speed;
             angularSpeed = speedComponent.angularSpeed;

@@ -55,8 +55,8 @@ public class PuppetMoverSystem implements ISystem, Disposable {
             angVAux.setZero();
 
             transform = entity.get(Transform.class).transform;
-            velocity = entity.get(Velocity.class).velocity;
-            angularVelocity = entity.get(Velocity.class).angularVelocity;
+            velocity = entity.get(Velocity.class).linear;
+            angularVelocity = entity.get(Velocity.class).angular;
             speed = entity.get(Speed.class);
             linearSpeed = speed.speed;
             angularSpeed = speed.angularSpeed;

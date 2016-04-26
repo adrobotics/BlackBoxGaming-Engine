@@ -32,6 +32,7 @@ import com.blackboxgaming.engine.util.Global;
  *
  * @author Adrian
  */
+@Deprecated
 public class LayerFactory {
 
     public static Layer createLevelAndHealthLayer() {
@@ -273,8 +274,10 @@ public class LayerFactory {
         table.bottom().left();
         stage.addActor(table);
 
-        if (Engine.systemManager.has(OrbitCameraSystem.class) && Engine.systemManager.get(OrbitCameraSystem.class).mouseListener) {
-            InputProcessor tmp = Engine.systemManager.get(OrbitCameraSystem.class).orbitCameraController;
+//        if (Engine.systemManager.has(OrbitCameraSystem.class) && Engine.systemManager.get(OrbitCameraSystem.class).mouseListener) {
+        if (Engine.systemManager.has(OrbitCameraSystem.class)) {
+//            InputProcessor tmp = Engine.systemManager.get(OrbitCameraSystem.class).orbitCameraController;
+            InputProcessor tmp = null;
             Engine.inputManager.remove(tmp);
             Engine.inputManager.add(stage);
             Engine.inputManager.add(tmp);

@@ -64,8 +64,8 @@ public class PhysicsSystem2D implements ISystem, Disposable {
             if (entity.has(Velocity.class)) {
                 position3D.set(entity.get(Transform.class).transform.getTranslation(tmp));
                 position2D.set(position3D.x, position3D.z);
-                velocity = entity.get(Velocity.class).velocity;
-                angularVelocity = entity.get(Velocity.class).angularVelocity;
+                velocity = entity.get(Velocity.class).linear;
+                angularVelocity = entity.get(Velocity.class).angular;
                 Body body = entity.get(Physics2D.class).body;
                 float angle = -entity.get(Transform.class).transform.getRotation(quat).getYawRad();
 

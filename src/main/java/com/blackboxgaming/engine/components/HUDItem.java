@@ -1,30 +1,36 @@
 package com.blackboxgaming.engine.components;
 
 /**
+ * Component used to display information via {@link HUDSystem}.
  *
  * @author Adrian
  */
 public class HUDItem implements IComponent {
 
-    public String name;
+    public String label;
     public String value;
     public String unit;
-    public boolean updateable;
 
-    public HUDItem(String name, String value, String unit) {
-        this(name, value, unit, false);
+    public HUDItem(String label) {
+        this(label, "", "");
     }
 
-    public HUDItem(String name, String value, String unit, boolean updateable) {
-        this.name = name;
+    public HUDItem(String label, String unit) {
+        this(label, "", unit);
+    }
+
+    public HUDItem(String label, float value, String unit) {
+        this(label, String.format("%.2f", value), unit);
+    }
+
+    public HUDItem(String label, String value, String unit) {
+        this.label = label;
         this.value = value;
         this.unit = unit;
-        this.updateable = updateable;
     }
 
     @Override
     public String toString() {
-        return "HUDItem{" + "name=" + name + '}';
+        return "HUDItem{" + "label=" + label + ", value=" + value + ", unit=" + unit + '}';
     }
-
 }

@@ -1,8 +1,9 @@
-package com.blackboxgaming.engine.systems;
+package com.blackboxgaming.engine.systems.render;
 
 import com.badlogic.gdx.utils.Disposable;
 import com.blackboxgaming.engine.Entity;
 import com.blackboxgaming.engine.components.Layer;
+import com.blackboxgaming.engine.systems.ISystem;
 import java.util.LinkedList;
 import java.util.List;
 

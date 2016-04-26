@@ -1,20 +1,20 @@
 package com.blackboxgaming.engine.components;
 
 /**
+ * Component used to name an entity.
  *
  * @author Adrian
  */
 public class Name implements IComponent {
 
-    public String name = "N/A";
+    public String value = "N/A";
 
     public Name(String name) {
-        this.name = name;
+        this.value = name;
     }
 
     @Override
     public String toString() {
-        return "Name{" + "name=" + name + '}';
+        return "Name{" + "name=" + value + '}';
     }
-    
 }

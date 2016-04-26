@@ -10,6 +10,7 @@ import java.util.List;
  *
  * @author Adrian
  */
+@Deprecated
 public class AnimationSystem implements ISystem, Disposable {
 
     private final List<Entity> entities = new ArrayList();

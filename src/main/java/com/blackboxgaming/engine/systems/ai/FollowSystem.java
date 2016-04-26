@@ -6,29 +6,24 @@ import com.blackboxgaming.engine.components.ai.Follow;
 import com.blackboxgaming.engine.Entity;
 import com.blackboxgaming.engine.components.JustFire;
 import com.blackboxgaming.engine.components.Parent;
-import com.blackboxgaming.engine.components.Velocity;
 import com.blackboxgaming.engine.components.Weapon;
-import com.blackboxgaming.engine.systems.ISystem;
-import java.util.ArrayList;
-import java.util.List;
+import com.blackboxgaming.engine.systems.AbstractSystem;
 
 /**
  *
  * @author Adrian
  */
-public class FollowSystem implements ISystem {
+public class FollowSystem extends AbstractSystem {
 
-    public List<Entity> followers = new ArrayList();
-
-    @Override
-    public void add(Entity entity) {
-        followers.add(entity);
+    public FollowSystem() {
+        requiredComponents.add(Follow.class);
+        requiredComponents.add(Transform.class);
     }
 
     @Override
     public void update(float delta) {
-        for (Entity follower : followers) {
-            follow(follower, ((Follow) follower.get(Follow.class)).target);
+        for (Entity entity : entities) {
+            follow(entity, ((Follow) entity.get(Follow.class)).target);
         }
     }
 
@@ -43,19 +38,12 @@ public class FollowSystem implements ISystem {
                     .inv()
                     .rotate(Vector3.Y, 90)
                     .trn(followerV3);
-        } else {
-            if (follower.has(Parent.class)) {
-                for (Entity child : follower.get(Parent.class).children) {
-                    if (child.has(Weapon.class)) {
-                        child.add(JustFire.instance);
-                    }
+        } else if (follower.has(Parent.class)) {
+            for (Entity child : follower.get(Parent.class).children) {
+                if (child.has(Weapon.class)) {
+                    child.add(JustFire.instance);
                 }
             }
         }
     }
-
-    @Override
-    public void remove(Entity entity) {
-    }
-
 }

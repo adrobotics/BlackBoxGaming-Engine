@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -18,10 +20,12 @@ import com.blackboxgaming.engine.components.Speed;
 import com.blackboxgaming.engine.components.HUDItem;
 import com.blackboxgaming.engine.Engine;
 import com.blackboxgaming.engine.Entity;
+import com.blackboxgaming.engine.components.Animation;
 import com.blackboxgaming.engine.components.Child;
 import com.blackboxgaming.engine.components.Damage;
 import com.blackboxgaming.engine.components.Enemy;
 import com.blackboxgaming.engine.components.Health;
+import com.blackboxgaming.engine.components.Name;
 import com.blackboxgaming.engine.factories.ModelFactory;
 import com.blackboxgaming.engine.global.constants.Constants;
 import com.blackboxgaming.engine.components.OrbitCameraFocus;
@@ -35,7 +39,7 @@ import com.blackboxgaming.engine.factories.CollisionShapeFactory;
 import com.blackboxgaming.engine.factories.CollisionShapeFactory2D;
 import com.blackboxgaming.engine.factories.LayerFactory;
 import com.blackboxgaming.engine.factories.WeaponFactory;
-import com.blackboxgaming.engine.systems.LayerRendererSystem;
+import com.blackboxgaming.engine.systems.render.LayerRendererSystem;
 import com.blackboxgaming.engine.systems.PhysicsSystem;
 import com.blackboxgaming.engine.systems.TheGrimReaperSystem;
 import java.util.ArrayList;
@@ -45,7 +49,8 @@ import java.util.List;
  *
  * @author Adrian
  */
-public class WorldSetupUtil {
+@Deprecated
+public class OldButNotThatOldWorldSetup {
 
     private static Entity player;
 
@@ -66,6 +71,23 @@ public class WorldSetupUtil {
         grid.add(new Model(Engine.assetManager.getModel("ground/ground"), true));
         grid.add(new Physics(CollisionShapeFactory.getBoxShape(size, 1, size), 0, btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT, Constants.GROUND_FLAG, (short) 0, Collision.DISABLE_DEACTIVATION));
         Engine.entityManager.add(grid);
+    }
+
+    public static void addKnight() {
+        int knightSize = 2;
+        Entity knight = new Entity();
+        com.badlogic.gdx.graphics.g3d.Model knightModel = Engine.assetManager.getModel("knight/repo/knight.g3db");
+        ModelInstance knightModelInstance = new ModelInstance(knightModel);
+        AnimationController controller = new AnimationController(knightModelInstance);
+        // rotate model !!!
+        knight.add(new Model(knightModelInstance, knightSize));
+        knight.add(new Animation(controller));
+        knight.add(new Transform(0, knightSize / 2f, 0, 0, 0, 0));
+        knight.add(new Puppet());
+        knight.add(new Velocity());
+        knight.add(new Speed(2.0f, 5 * 36));
+        knight.add(new OrbitCameraFocus());
+        Engine.entityManager.add(knight);
     }
 
     public static void addArena(float width, float height) {
@@ -116,7 +138,7 @@ public class WorldSetupUtil {
         entity.add(new Model(ModelFactory.getCubeModel(1f), Color.ORANGE));
         entity.add(new Puppet());
         entity.add(new OrbitCameraFocus());
-        entity.add(new HUDItem("isFlying", "", "", true));
+//        entity.add(new HUDItem("isFlying", "", "", true));
         entity.add(new Shadow());
 //        entity.add(new Physics(CollisionShapeFactory.getCubeShape(1), 25, btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK, Constants.OBJECT_FLAG, Constants.ALL_FLAG, Collision.ACTIVE_TAG));
         Engine.entityManager.add(entity);
@@ -242,53 +264,22 @@ public class WorldSetupUtil {
         }
     }
 
-    public static void addHUDItems() {
-        Entity hudItem;
-        hudItem = new Entity();
-        hudItem.add(new HUDItem("Camera", "", "", true));
-        Engine.entityManager.add(hudItem);
-        hudItem = new Entity();
-        hudItem.add(new HUDItem("Bullet val", "", "%", true));
-        Engine.entityManager.add(hudItem);
-        hudItem = new Entity();
-        hudItem.add(new HUDItem("Bullet avg", "", "%", true));
-        Engine.entityManager.add(hudItem);
-        hudItem = new Entity();
-        hudItem.add(new HUDItem("Rotation", "", "degrees", true));
-        Engine.entityManager.add(hudItem);
-        hudItem = new Entity();
-        hudItem.add(new HUDItem("Fps", "", "", true));
-        Engine.entityManager.add(hudItem);
-        hudItem = new Entity();
-        hudItem.add(new HUDItem("Delta", "", "ms", true));
-        Engine.entityManager.add(hudItem);
-        hudItem = new Entity();
-        hudItem.add(new HUDItem("Entities", "", "", true));
-        Engine.entityManager.add(hudItem);
-        hudItem = new Entity();
-        hudItem.add(new HUDItem("Frustrum", "", "ojects", true));
-        Engine.entityManager.add(hudItem);
-        hudItem = new Entity();
-        hudItem.add(new HUDItem("Physics", "", "", true));
-        Engine.entityManager.add(hudItem);
-    }
-
     public static void addHUDItemsForProfiling() {
         Entity hudItem;
         hudItem = new Entity();
-        hudItem.add(new HUDItem("GL-calls", "", "", true));
+        hudItem.add(new HUDItem("GL-calls", "", ""));
         Engine.entityManager.add(hudItem);
         hudItem = new Entity();
-        hudItem.add(new HUDItem("Draw-calls", "", "", true));
+        hudItem.add(new HUDItem("Draw-calls", "", ""));
         Engine.entityManager.add(hudItem);
         hudItem = new Entity();
-        hudItem.add(new HUDItem("Shader-switches", "", "", true));
+        hudItem.add(new HUDItem("Shader-switches", "", ""));
         Engine.entityManager.add(hudItem);
         hudItem = new Entity();
-        hudItem.add(new HUDItem("Texture-bindings", "", "", true));
+        hudItem.add(new HUDItem("Texture-bindings", "", ""));
         Engine.entityManager.add(hudItem);
         hudItem = new Entity();
-        hudItem.add(new HUDItem("Vertices", "", "", true));
+        hudItem.add(new HUDItem("Vertices", "", ""));
         Engine.entityManager.add(hudItem);
     }
 
@@ -334,6 +325,7 @@ public class WorldSetupUtil {
             boss.add(new Model(ModelFactory.getCubeModel(3), Randomizer.getRandomColor()));
             boss.add(new Health(100));
             boss.add(new Enemy());
+            boss.add(new Name("Boss enemy"));
             boss.add(new Shadow());
             boss.add(new Velocity(2.5f, 0, 0));
             boss.add(new Physics(CollisionShapeFactory.getCubeShape(3), 5, btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK, Constants.OBJECT_FLAG, Constants.ALL_FLAG, Collision.ACTIVE_TAG));

@@ -1,4 +1,4 @@
-package com.blackboxgaming.engine.systems;
+package com.blackboxgaming.engine.systems.render;
 
 import com.badlogic.gdx.graphics.Color;
 import static com.badlogic.gdx.graphics.GL20.GL_TRIANGLES;
@@ -17,7 +17,8 @@ import com.blackboxgaming.engine.Entity;
 import com.blackboxgaming.engine.components.Health;
 import com.blackboxgaming.engine.components.Model;
 import com.blackboxgaming.engine.components.Transform;
-import static com.blackboxgaming.engine.systems.ModelRendererSystem.modelBatch;
+import com.blackboxgaming.engine.systems.ISystem;
+import static com.blackboxgaming.engine.systems.render.ModelRendererSystem.modelBatch;
 import com.blackboxgaming.engine.util.Global;
 import java.util.ArrayList;
 import java.util.List;

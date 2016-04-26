@@ -3,7 +3,7 @@ package com.blackboxgaming.engine.systems;
 import com.badlogic.gdx.utils.Disposable;
 import com.blackboxgaming.engine.Entity;
 import com.blackboxgaming.engine.util.Global;
-import com.blackboxgaming.engine.util.WorldSetupUtil;
+import com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,9 +49,9 @@ public class EnemySpawnSystem implements ISystem, Disposable {
         }
         if (System.currentTimeMillis() - start >= delay) {
             System.out.println("Spawning " + n + " new enemies.");
-            WorldSetupUtil.addNeutralEnemies(Global.mapWidth / 2, neutral);
-            WorldSetupUtil.addBossEnemies(Global.mapWidth / 2, boss);
-            WorldSetupUtil.addFollowingEnemies(Global.mapWidth/2, following);
+            OldButNotThatOldWorldSetup.addNeutralEnemies(Global.mapWidth / 2, neutral);
+            OldButNotThatOldWorldSetup.addBossEnemies(Global.mapWidth / 2, boss);
+            OldButNotThatOldWorldSetup.addFollowingEnemies(Global.mapWidth/2, following);
             start = 0;
         }
     }

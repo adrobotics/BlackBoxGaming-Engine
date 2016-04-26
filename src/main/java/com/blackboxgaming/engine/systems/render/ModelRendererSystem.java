@@ -1,4 +1,4 @@
-package com.blackboxgaming.engine.systems;
+package com.blackboxgaming.engine.systems.render;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -21,10 +21,12 @@ import com.blackboxgaming.engine.components.Model;
 import com.blackboxgaming.engine.components.Transform;
 import com.blackboxgaming.engine.Engine;
 import com.blackboxgaming.engine.Entity;
-import com.blackboxgaming.engine.components.Health;
 import com.blackboxgaming.engine.components.Radius;
 import com.blackboxgaming.engine.components.Shadow;
 import com.blackboxgaming.engine.factories.ModelFactory;
+import com.blackboxgaming.engine.systems.ISystem;
+import com.blackboxgaming.engine.systems.PhysicsSystem;
+import com.blackboxgaming.engine.systems.PhysicsSystem2D;
 import com.blackboxgaming.engine.util.Global;
 import java.util.ArrayList;
 import java.util.List;

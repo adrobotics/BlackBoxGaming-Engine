@@ -8,8 +8,9 @@ import com.badlogic.gdx.physics.bullet.collision.Collision;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.blackboxgaming.engine.Engine;
 import com.blackboxgaming.engine.Entity;
-import com.blackboxgaming.engine.World;
+import com.blackboxgaming.engine.systems.conway.ConwayUtil;
 import com.blackboxgaming.engine.components.Cell;
+import com.blackboxgaming.engine.components.HUDItem;
 import com.blackboxgaming.engine.components.Health;
 import com.blackboxgaming.engine.components.Model;
 import com.blackboxgaming.engine.components.OrbitCameraFocus;
@@ -26,15 +27,18 @@ import com.blackboxgaming.engine.factories.WeaponFactory;
 import com.blackboxgaming.engine.global.constants.Constants;
 import com.blackboxgaming.engine.systems.AbyssSystem;
 import com.blackboxgaming.engine.systems.ConwaySystem;
-import com.blackboxgaming.engine.systems.ISystem;
+import com.blackboxgaming.engine.systems.render.HealthBarRendererSystem;
+import com.blackboxgaming.engine.systems.HealthSystem;
 import com.blackboxgaming.engine.systems.ParentChildSystem;
 import com.blackboxgaming.engine.systems.PhysicsSystem;
 import com.blackboxgaming.engine.systems.PhysicsSystem2D;
+import com.blackboxgaming.engine.systems.TimedDeathSystem;
+import com.blackboxgaming.engine.systems.VelocitySystem;
 import com.blackboxgaming.engine.systems.WeaponSystem;
 import com.blackboxgaming.engine.systems.ai.FollowSystem;
 import com.blackboxgaming.engine.util.Randomizer;
-import com.blackboxgaming.engine.util.WorldSetupUtil;
-import static com.blackboxgaming.engine.util.WorldSetupUtil.createWeapon;
+import com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup;
+import static com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup.createWeapon;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +57,10 @@ public class DemoKeyListener implements InputProcessor {
                 if (!Engine.systemManager.has(ConwaySystem.class)) {
                     Engine.systemManager.add(new ConwaySystem(ConwaySystem.life5766, 200));
                     System.out.println("Adding premordial soup");
-                    World.createPremordialSoup(20, 4);
+                    ConwayUtil.createPremordialSoup(20, 4);
+                    Entity hudItem = new Entity();
+                    hudItem.add(new HUDItem("Generation"));
+                    Engine.entityManager.add(hudItem);
                 } else {
                     System.out.println("Removing ConwaySystem");
                     Engine.systemManager.get(ConwaySystem.class).clearUniverse();
@@ -119,8 +126,12 @@ public class DemoKeyListener implements InputProcessor {
                 break;
             case Keys.NUM_6:
                 System.out.println("Giving all cells health and adding weapon system");
-                Engine.systemManager.add(new ParentChildSystem());
+                Engine.systemManager.addAfter(new ParentChildSystem(), VelocitySystem.class);
                 Engine.systemManager.add(new WeaponSystem());
+                Engine.systemManager.add(new TimedDeathSystem());
+                Engine.systemManager.add(new HealthSystem());
+                Engine.systemManager.add(new HealthBarRendererSystem());
+
                 System.out.println("Making all cells into enemies");
                 List<Entity> entities2 = new ArrayList();
                 for (Entity cell : Engine.entityManager.getEntities()) {
@@ -132,7 +143,7 @@ public class DemoKeyListener implements InputProcessor {
                     enemy.add(new Health(100));
 
                     Parent parent = new Parent(true);
-                    parent.add(WorldSetupUtil.createWeapon(enemy, WeaponFactory.WEAPON_MELEE, new Vector3(0, 0, 0.5f)));
+                    parent.add(OldButNotThatOldWorldSetup.createWeapon(enemy, WeaponFactory.WEAPON_MELEE, new Vector3(0, 0, 0.5f)));
                     enemy.add(parent);
 
                     Engine.entityManager.update(enemy);
@@ -157,7 +168,7 @@ public class DemoKeyListener implements InputProcessor {
                 System.out.println("Adding boss enemies");
                 Engine.systemManager.add(new ParentChildSystem());
                 Engine.systemManager.add(new WeaponSystem());
-                WorldSetupUtil.addBossEnemies(25, 10);
+                OldButNotThatOldWorldSetup.addBossEnemies(25, 10);
                 break;
             case Keys.NUM_9:
                 System.out.println("Adding dragon");

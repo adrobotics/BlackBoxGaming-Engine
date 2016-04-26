@@ -30,6 +30,7 @@ import com.blackboxgaming.engine.util.Randomizer;
  *
  * @author Adrian
  */
+@Deprecated
 public class OldWorldSetup {
 
     private static Entity createHat(Entity parent, Vector3 relativePositionToParent) {
@@ -71,7 +72,7 @@ public class OldWorldSetup {
         entity.add(new Puppet());
         entity.add(new Health(100));
         entity.add(new OrbitCameraFocus());
-        entity.add(new HUDItem("isFlying", "", "", true));
+//        entity.add(new HUDItem("isFlying", "", "", true));
         entity.add(new Shadow());
         entity.add(new DoubleBody());
         entity.add(new Physics(CollisionShapeFactory.getCubeShape(1), 25, btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK, Constants.OBJECT_FLAG, Constants.ALL_FLAG, Collision.ACTIVE_TAG));
@@ -106,7 +107,7 @@ public class OldWorldSetup {
         entity.add(new Puppet());
         entity.add(new Health(100));
         entity.add(new OrbitCameraFocus());
-        entity.add(new HUDItem("isFlying", "", "", true));
+//        entity.add(new HUDItem("isFlying", "", "", true));
         entity.add(new Shadow());
 //        entity.add(new Physics2D(CollisionShapeFactory2D.getBoxShape(0.5f, 0.5f), BodyDef.BodyType.DynamicBody, 1, entity.get(Transform.class).transform, false));
 //        entity.add(new Physics(CollisionShapeFactory.getCubeShape(1), 25, btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK, Constants.OBJECT_FLAG, Constants.ALL_FLAG, Collision.ACTIVE_TAG));
