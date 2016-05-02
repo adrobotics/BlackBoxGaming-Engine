@@ -40,6 +40,9 @@ public class OrbitCameraSystem extends AbstractSystem {
         if (!accept(entity)) {
             return;
         }
+        if(entity.equals(target)){
+            return;
+        }
         if (target != null) {
             target.remove(OrbitCameraFocus.class);
         }

@@ -1,10 +1,15 @@
 package com.blackboxgaming.engine.managers;
 
 import com.badlogic.gdx.utils.Disposable;
+import com.blackboxgaming.engine.Engine;
 import com.blackboxgaming.engine.Entity;
+import com.blackboxgaming.engine.systems.AbstractSystem;
 import com.blackboxgaming.engine.systems.ISystem;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Manager that stores systems.
@@ -22,7 +27,11 @@ public class SystemManager implements Disposable {
     public void add(ISystem system) {
         if (!has(system.getClass())) {
             systems.put(system.getClass(), system);
-            // add entities to this system
+            for (Entity entity : Engine.entityManager.getEntities()) {
+                if (system instanceof AbstractSystem) {
+                    system.add(entity);
+                }
+            }
         }
     }
 
@@ -33,13 +42,17 @@ public class SystemManager implements Disposable {
                 Class<? extends ISystem> key = entry.getKey();
                 ISystem value = entry.getValue();
 
-                if (key == referencePoint) {
+                if (key.equals(referencePoint)) {
                     newOrder.put(system.getClass(), system);
                 }
                 newOrder.put(key, value);
             }
             systems = newOrder;
-            // add entities to this system
+            for (Entity entity : Engine.entityManager.getEntities()) {
+                if (system instanceof AbstractSystem) {
+                    system.add(entity);
+                }
+            }
         }
     }
 
@@ -51,17 +64,25 @@ public class SystemManager implements Disposable {
                 ISystem value = entry.getValue();
 
                 newOrder.put(key, value);
-                if (key == referencePoint) {
+                if (key.equals(referencePoint)) {
                     newOrder.put(system.getClass(), system);
                 }
             }
             systems = newOrder;
-            // add entities to this system
+            for (Entity entity : Engine.entityManager.getEntities()) {
+                if (system instanceof AbstractSystem) {
+                    system.add(entity);
+                }
+            }
         }
     }
 
     public <E extends ISystem> E get(Class<E> type) {
         return (E) systems.get(type);
+    }
+
+    public Set<ISystem> getAll() {
+        return new LinkedHashSet(systems.values());
     }
 
     public void remove(Class<? extends ISystem> type) {

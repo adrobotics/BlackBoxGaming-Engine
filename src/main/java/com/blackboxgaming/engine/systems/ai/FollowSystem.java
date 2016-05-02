@@ -10,6 +10,7 @@ import com.blackboxgaming.engine.components.Weapon;
 import com.blackboxgaming.engine.systems.AbstractSystem;
 
 /**
+ * Rotates entities that have a {@link Follow} component towards their target.
  *
  * @author Adrian
  */

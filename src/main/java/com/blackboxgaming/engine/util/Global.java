@@ -84,7 +84,7 @@ public class Global {
     private static btDynamicsWorld dynamicsWorld = null;
     private static World dynamicsWorld2D = null;
     public static float gravity = -10;
-    private final static float gravity2D = 0;
+    private final static float gravity2D = 0f;
     public final static float friction = 1f;
     public static boolean leftMouseCameraMove = false;
 
@@ -193,7 +193,7 @@ public class Global {
 
     public static World getDynamicsWorld2D() {
         if (dynamicsWorld2D == null) {
-            dynamicsWorld2D = new World(new Vector2(0, gravity2D), true);
+            dynamicsWorld2D = new World(new Vector2(0f, gravity2D), true);
         }
         return dynamicsWorld2D;
     }

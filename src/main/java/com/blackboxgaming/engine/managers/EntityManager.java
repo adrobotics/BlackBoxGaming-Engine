@@ -61,6 +61,15 @@ public class EntityManager {
         }
     }
 
+    private void addToSystems_prototype(Entity entity) {
+        for (ISystem system : Engine.systemManager.getAll()) {
+            if (system instanceof AbstractSystem) {
+                // eventually all systems should extend AbstractSystem
+                system.add(entity);
+            }
+        }
+    }
+
     private void addToSystems(Entity entity) {
         // model renderer
         if (entity.has(Transform.class) && entity.has(Model.class)) {
@@ -195,6 +204,8 @@ public class EntityManager {
                 Engine.systemManager.get(ConwaySystem.class).add(entity);
             }
         }
+        
+        addToSystems_prototype(entity);
     }
 
     public List<Entity> getEntities() {

@@ -1,9 +1,7 @@
 package com.blackboxgaming.engine;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.graphics.Color;
-import com.blackboxgaming.engine.components.*;
-import com.blackboxgaming.engine.factories.*;
+import com.badlogic.gdx.math.Vector3;
 import com.blackboxgaming.engine.input.*;
 import com.blackboxgaming.engine.systems.*;
 import com.blackboxgaming.engine.systems.render.*;
@@ -33,11 +31,14 @@ public class BlackBoxGame extends ApplicationAdapter {
 
         // render
         Engine.systemManager.add(new ModelRendererSystem());
-        Engine.systemManager.add(new HUDSystem());
 
         // world setup
         WorldUtil.addHUDItems();
-        WorldUtil.addPuppet();
+//        WorldUtil.addPuppet();
+        WorldUtil.addPlayer();
+        WorldUtil.addPhysics();
+        WorldUtil.addObstacle(new Vector3(5, 0.5f, 0));
+        WorldUtil.addObstacle(new Vector3(0, 0.5f, 5));
         Global.setCamera(-15f, 15f, 15f);
     }
 

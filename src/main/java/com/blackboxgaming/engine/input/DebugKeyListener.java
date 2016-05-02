@@ -13,6 +13,7 @@ import com.blackboxgaming.engine.components.Health;
 import com.blackboxgaming.engine.components.Model;
 import com.blackboxgaming.engine.components.Transform;
 import com.blackboxgaming.engine.factories.ModelFactory;
+import com.blackboxgaming.engine.systems.ISystem;
 import com.blackboxgaming.engine.systems.LevelProgressionSystem;
 import com.blackboxgaming.engine.util.Global;
 import com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup;
@@ -95,6 +96,13 @@ public class DebugKeyListener extends InputAdapter {
             case Keys.F8:
                 Global.SYNC_KEYBOARD_CAM_ROTATION = !Global.SYNC_KEYBOARD_CAM_ROTATION;
                 System.out.println("SYNC_KEYBOARD_CAM_ROTATION = " + Global.SYNC_KEYBOARD_CAM_ROTATION);
+                break;
+            case Keys.F9:
+                System.out.print("Systems: ");
+                for (ISystem system : Engine.systemManager.getAll()) {
+                    System.out.print(system.getClass().getSimpleName() + " ");
+                }
+                System.out.println("");
                 break;
             case Keys.C:
                 // add random physics object

@@ -151,10 +151,9 @@ public class DemoKeyListener implements InputProcessor {
                 break;
             case Keys.NUM_7:
                 System.out.println("Adding weapon to player");
-                Engine.systemManager.add(new ParentChildSystem());
-                Engine.systemManager.add(new WeaponSystem());
                 for (Entity e : Engine.entityManager.getEntities()) {
                     if (e.has(OrbitCameraFocus.class)) {
+                        System.out.println("Adding weapon to player x");
                         e.add(new Physics(CollisionShapeFactory.getCubeShape(1), 25, btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK, Constants.OBJECT_FLAG, Constants.ALL_FLAG, Collision.ACTIVE_TAG));
                         Parent parent = new Parent(true);
                         parent.add(createWeapon(e, WeaponFactory.WEAPON_PLASMA, new Vector3(0, 0, 0.5f)));
@@ -166,8 +165,6 @@ public class DemoKeyListener implements InputProcessor {
                 break;
             case Keys.NUM_8:
                 System.out.println("Adding boss enemies");
-                Engine.systemManager.add(new ParentChildSystem());
-                Engine.systemManager.add(new WeaponSystem());
                 OldButNotThatOldWorldSetup.addBossEnemies(25, 10);
                 break;
             case Keys.NUM_9:

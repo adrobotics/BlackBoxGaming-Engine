@@ -36,7 +36,6 @@ public class PhysicsSystem2D implements ISystem, Disposable {
 
     public PhysicsSystem2D() {
         Box2D.init();
-        Global.getDynamicsWorld2D();
         Global.getDynamicsWorld2D().setContactListener(new ContactListener2D());
     }
 
@@ -91,8 +90,10 @@ public class PhysicsSystem2D implements ISystem, Disposable {
                     float y = transform.getTranslation(Vector3.Zero).y;
                     quat.set(transform.getRotation(quat));
                     quat.setEulerAnglesRad(-angle, quat.getPitchRad(), quat.getRollRad());
-                    transform.set(quat);
-                    transform.trn(new Vector3(phPos.x, y, phPos.y));
+                    // deactivated since it causes drifting effect
+                    // without this 2d colisions are detected but not rezolved
+//                    transform.set(quat);
+//                    transform.trn(new Vector3(phPos.x, y, phPos.y));
                 }
             }
         }

@@ -27,6 +27,7 @@ import com.blackboxgaming.engine.factories.ModelFactory;
 import static com.blackboxgaming.engine.factories.WeaponFactory.*;
 import com.blackboxgaming.engine.input.PlayerKeyListener;
 import com.blackboxgaming.engine.util.Global;
+import com.blackboxgaming.engine.util.Randomizer;
 import com.blackboxgaming.engine.util.VUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -199,13 +200,13 @@ public class WeaponSystem implements ISystem, Disposable {
             Global.getDynamicsWorld2D().rayCast(meleeCallback2D, from2D, to2D);
             if (meleeCallback2D.hasHit) {
 //                if ((int) meleeCallback2D.fixture.getBody().getUserData() == Global.mainCharacter.id) {
-                    Entity entity;
-                    entity = new Entity();
-                    entity.add(new Transform(origin));
-                    entity.add(weapon.nozzleFireModel);
-                    entity.add(new Death(100));
-                    Engine.entityManager.add(entity);
-                    decreaseHealth(Engine.entityManager.get((int) meleeCallback2D.fixture.getBody().getUserData()), weapon.damage);
+                Entity entity;
+                entity = new Entity();
+                entity.add(new Transform(origin));
+                entity.add(weapon.nozzleFireModel);
+                entity.add(new Death(100));
+                Engine.entityManager.add(entity);
+                decreaseHealth(Engine.entityManager.get((int) meleeCallback2D.fixture.getBody().getUserData()), weapon.damage);
 //                }
                 meleeCallback2D.hasHit = false;
             }
@@ -231,8 +232,8 @@ public class WeaponSystem implements ISystem, Disposable {
         Entity entity = new Entity();
         entity.add(new Transform(origin.cpy().translate(0.5f, 0, 0)));
         entity.add(new Velocity(weapon.speed, 0, 0));
-//        entity.add(new Model(weapon.bulletModel.modelInstance.copy().model, ((ColorAttribute)weapon.bulletModel.modelInstance.materials.get(0).get(ColorAttribute.Diffuse)).color, true));
-        entity.add(new Model(weapon.bulletModel.modelInstance.copy().model, ((ColorAttribute) weapon.bulletModel.modelInstance.materials.get(0).get(ColorAttribute.Diffuse)).color, true));
+        entity.add(new Model(weapon.bulletModel.modelInstance.copy().model, Randomizer.getRandomColor(), true));
+//        entity.add(new Model(weapon.bulletModel.modelInstance.copy().model, ((ColorAttribute) weapon.bulletModel.modelInstance.materials.get(0).get(ColorAttribute.Diffuse)).color, true));
         entity.add(new Death(2000));
         entity.add(new Damage(weapon.damage));
 //        entity.add(new Physics(CollisionShapeFactory.getSphereShape(0.5f), 0.5f, btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK, CollisionFlag.BULLET_COLLISION_FLAG, CollisionFlag.ALL_FLAG, Collision.ACTIVE_TAG));
