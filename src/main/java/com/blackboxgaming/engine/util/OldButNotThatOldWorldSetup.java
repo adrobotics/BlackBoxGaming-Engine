@@ -329,7 +329,7 @@ public class OldButNotThatOldWorldSetup {
             boss.add(new Shadow());
             boss.add(new Velocity(2.5f, 0, 0));
             boss.add(new Physics(CollisionShapeFactory.getCubeShape(3), 5, btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK, Constants.OBJECT_FLAG, Constants.ALL_FLAG, Collision.ACTIVE_TAG));
-            boss.add(new Physics2D(CollisionShapeFactory2D.getBoxShape(1.5f, 1.5f), BodyType.DynamicBody, 5, boss.get(Transform.class).transform, false));
+            boss.add(new Physics2D(CollisionShapeFactory2D.getBoxShape(1.5f, 1.5f), BodyType.DynamicBody, 50, boss.get(Transform.class).transform, false));
 
             Parent parent = new Parent(true);
             parent.add(createWeapon(boss, WeaponFactory.WEAPON_PLASMA, new Vector3(1, -1, 1.5f)));

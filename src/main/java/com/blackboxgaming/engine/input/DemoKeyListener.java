@@ -2,6 +2,7 @@ package com.blackboxgaming.engine.input;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.bullet.collision.Collision;
@@ -13,10 +14,13 @@ import com.blackboxgaming.engine.components.Cell;
 import com.blackboxgaming.engine.components.HUDItem;
 import com.blackboxgaming.engine.components.Health;
 import com.blackboxgaming.engine.components.Model;
+import com.blackboxgaming.engine.components.Name;
 import com.blackboxgaming.engine.components.OrbitCameraFocus;
 import com.blackboxgaming.engine.components.Parent;
 import com.blackboxgaming.engine.components.Physics;
 import com.blackboxgaming.engine.components.Physics2D;
+import com.blackboxgaming.engine.components.Puppet;
+import com.blackboxgaming.engine.components.Speed;
 import com.blackboxgaming.engine.components.Transform;
 import com.blackboxgaming.engine.components.Velocity;
 import com.blackboxgaming.engine.components.ai.Follow;
@@ -36,6 +40,7 @@ import com.blackboxgaming.engine.systems.TimedDeathSystem;
 import com.blackboxgaming.engine.systems.VelocitySystem;
 import com.blackboxgaming.engine.systems.WeaponSystem;
 import com.blackboxgaming.engine.systems.ai.FollowSystem;
+import com.blackboxgaming.engine.systems.render.ModelRendererSystem;
 import com.blackboxgaming.engine.util.Randomizer;
 import com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup;
 import static com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup.createWeapon;
@@ -80,11 +85,27 @@ public class DemoKeyListener implements InputProcessor {
                     Engine.systemManager.get(ConwaySystem.class).manualBreak = toggle;
                 }
                 break;
+            case Keys.G:
+                System.out.println("Adding Glidder");
+                if (!Engine.systemManager.has(ConwaySystem.class)) {
+                    Engine.systemManager.add(new ConwaySystem(ConwaySystem.life5766, 200));
+                    System.out.println("Adding premordial soup");
+                    ConwayUtil.createGlider();
+                    Entity hudItem = new Entity();
+                    hudItem.add(new HUDItem("Generation"));
+                    Engine.entityManager.add(hudItem);
+                } else {
+                    System.out.println("Removing ConwaySystem");
+                    Engine.systemManager.get(ConwaySystem.class).clearUniverse();
+                    Engine.systemManager.get(ConwaySystem.class).dispose();
+                    Engine.systemManager.remove(ConwaySystem.class);
+                }
+                break;
             case Keys.NUM_3:
                 System.out.println("Adding physics and abys systems");
-                Engine.systemManager.add(new PhysicsSystem());
-                Engine.systemManager.add(new PhysicsSystem2D());
-                Engine.systemManager.add(new AbyssSystem());
+                Engine.systemManager.addAfter(new PhysicsSystem(), VelocitySystem.class);
+                Engine.systemManager.addAfter(new PhysicsSystem2D(), PhysicsSystem.class);
+                Engine.systemManager.addAfter(new AbyssSystem(), PhysicsSystem2D.class);
 
                 System.out.println("Adding ground");
                 Entity grid = new Entity();
@@ -96,7 +117,6 @@ public class DemoKeyListener implements InputProcessor {
             case Keys.NUM_4:
                 System.out.println("Adding physics to cells");
                 if (Engine.systemManager.has(ConwaySystem.class)) {
-//                    ISystem physicsSystem = Engine.systemManager.get(PhysicsSystem.class);
                     for (Map.Entry<Cell, Entity> entrySet : Engine.systemManager.get(ConwaySystem.class).universe.entrySet()) {
                         Entity entity = entrySet.getValue();
                         entity.add(new Physics(CollisionShapeFactory.getCubeShape(1), 25, btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK, Constants.OBJECT_FLAG, Constants.ALL_FLAG, Collision.ACTIVE_TAG));
@@ -130,7 +150,7 @@ public class DemoKeyListener implements InputProcessor {
                 Engine.systemManager.add(new WeaponSystem());
                 Engine.systemManager.add(new TimedDeathSystem());
                 Engine.systemManager.add(new HealthSystem());
-                Engine.systemManager.add(new HealthBarRendererSystem());
+                Engine.systemManager.addAfter(new HealthBarRendererSystem(), ModelRendererSystem.class);
 
                 System.out.println("Making all cells into enemies");
                 List<Entity> entities2 = new ArrayList();
@@ -154,7 +174,11 @@ public class DemoKeyListener implements InputProcessor {
                 for (Entity e : Engine.entityManager.getEntities()) {
                     if (e.has(OrbitCameraFocus.class)) {
                         System.out.println("Adding weapon to player x");
+
+                        e.add(new Health(100));
+                        e.add(new Model(ModelFactory.getCubeModel(1), Color.GREEN));
                         e.add(new Physics(CollisionShapeFactory.getCubeShape(1), 25, btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK, Constants.OBJECT_FLAG, Constants.ALL_FLAG, Collision.ACTIVE_TAG));
+                        e.add(new Physics2D(CollisionShapeFactory2D.getBoxShape(0.5f, 0.5f), BodyDef.BodyType.DynamicBody, 1, e.get(Transform.class).transform, false));
                         Parent parent = new Parent(true);
                         parent.add(createWeapon(e, WeaponFactory.WEAPON_PLASMA, new Vector3(0, 0, 0.5f)));
                         parent.add(createWeapon(e, WeaponFactory.WEAPON_PLASMA, new Vector3(0, 0, -0.5f)));
