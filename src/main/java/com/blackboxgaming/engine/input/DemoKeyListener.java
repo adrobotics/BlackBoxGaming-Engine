@@ -36,6 +36,7 @@ import com.blackboxgaming.engine.systems.TimedDeathSystem;
 import com.blackboxgaming.engine.systems.VelocitySystem;
 import com.blackboxgaming.engine.systems.WeaponSystem;
 import com.blackboxgaming.engine.systems.ai.FollowSystem;
+import com.blackboxgaming.engine.systems.render.HUDMessageRendererSystem;
 import com.blackboxgaming.engine.util.Randomizer;
 import com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup;
 import static com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup.createWeapon;
@@ -61,6 +62,7 @@ public class DemoKeyListener implements InputProcessor {
                     Entity hudItem = new Entity();
                     hudItem.add(new HUDItem("Generation"));
                     Engine.entityManager.add(hudItem);
+                    HUDMessageRendererSystem.addTemporaryMessage("Added cells");
                 } else {
                     System.out.println("Removing ConwaySystem");
                     Engine.systemManager.get(ConwaySystem.class).clearUniverse();
@@ -72,12 +74,12 @@ public class DemoKeyListener implements InputProcessor {
                 System.out.println("Toggle Conway System");
                 if (Engine.systemManager.has(ConwaySystem.class)) {
                     boolean toggle = Engine.systemManager.get(ConwaySystem.class).manualBreak;
-                    if (toggle) {
-                        toggle = false;
-                    } else {
-                        toggle = true;
+                    Engine.systemManager.get(ConwaySystem.class).manualBreak = !toggle;
+                    if(toggle == true){
+                        HUDMessageRendererSystem.addTemporaryMessage("Started ConwaySystem");
+                    }else{
+                        HUDMessageRendererSystem.addTemporaryMessage("Stopped ConwaySystem");
                     }
-                    Engine.systemManager.get(ConwaySystem.class).manualBreak = toggle;
                 }
                 break;
             case Keys.NUM_3:
@@ -92,6 +94,7 @@ public class DemoKeyListener implements InputProcessor {
                 grid.add(new Model(ModelFactory.getGridModel((int) 50)));
                 grid.add(new Physics(CollisionShapeFactory.getBoxShape(50, 1, 50, new Vector3(0, -0.5f, 0)), 0, btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT, Constants.GROUND_FLAG, (short) 0, Collision.DISABLE_DEACTIVATION));
                 Engine.entityManager.add(grid);
+                HUDMessageRendererSystem.addTemporaryMessage("Added ground");
                 break;
             case Keys.NUM_4:
                 System.out.println("Adding physics to cells");
@@ -107,6 +110,7 @@ public class DemoKeyListener implements InputProcessor {
                     System.out.println("Removing conway system");
                     Engine.systemManager.remove(ConwaySystem.class);
                 }
+                HUDMessageRendererSystem.addTemporaryMessage("Added physics to cells");
                 break;
             case Keys.NUM_5:
                 System.out.println("Adding follower system");
@@ -148,6 +152,7 @@ public class DemoKeyListener implements InputProcessor {
 
                     Engine.entityManager.update(enemy);
                 }
+                HUDMessageRendererSystem.addTemporaryMessage("Added health and weapon to cells");
                 break;
             case Keys.NUM_7:
                 System.out.println("Adding weapon to player");
@@ -162,10 +167,12 @@ public class DemoKeyListener implements InputProcessor {
                         Engine.entityManager.update(e);
                     }
                 }
+                HUDMessageRendererSystem.addTemporaryMessage("Added weapon to player");
                 break;
             case Keys.NUM_8:
                 System.out.println("Adding boss enemies");
                 OldButNotThatOldWorldSetup.addBossEnemies(25, 10);
+                HUDMessageRendererSystem.addTemporaryMessage("Added 10 boss enemies");
                 break;
             case Keys.NUM_9:
                 System.out.println("Adding dragon");

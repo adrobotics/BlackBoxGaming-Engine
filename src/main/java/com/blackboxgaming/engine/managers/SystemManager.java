@@ -5,6 +5,7 @@ import com.blackboxgaming.engine.Engine;
 import com.blackboxgaming.engine.Entity;
 import com.blackboxgaming.engine.systems.AbstractSystem;
 import com.blackboxgaming.engine.systems.ISystem;
+import com.blackboxgaming.engine.systems.render.HUDMessageRendererSystem;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -27,6 +28,9 @@ public class SystemManager implements Disposable {
     public void add(ISystem system) {
         if (!has(system.getClass())) {
             systems.put(system.getClass(), system);
+            if (!(system instanceof HUDMessageRendererSystem)) {
+                HUDMessageRendererSystem.addTemporaryMessage("Added " + system.getClass().getSimpleName());
+            }
             for (Entity entity : Engine.entityManager.getEntities()) {
                 if (system instanceof AbstractSystem) {
                     system.add(entity);
@@ -44,6 +48,9 @@ public class SystemManager implements Disposable {
 
                 if (key.equals(referencePoint)) {
                     newOrder.put(system.getClass(), system);
+                    if (!(system instanceof HUDMessageRendererSystem)) {
+                        HUDMessageRendererSystem.addTemporaryMessage("Added " + system.getClass().getSimpleName() + " before " + referencePoint.getSimpleName());
+                    }
                 }
                 newOrder.put(key, value);
             }
@@ -66,6 +73,9 @@ public class SystemManager implements Disposable {
                 newOrder.put(key, value);
                 if (key.equals(referencePoint)) {
                     newOrder.put(system.getClass(), system);
+                    if (!(system instanceof HUDMessageRendererSystem)) {
+                        HUDMessageRendererSystem.addTemporaryMessage("Added " + system.getClass().getSimpleName() + " after " + referencePoint.getSimpleName());
+                    }
                 }
             }
             systems = newOrder;
@@ -85,8 +95,13 @@ public class SystemManager implements Disposable {
         return new LinkedHashSet(systems.values());
     }
 
+    public int size() {
+        return systems.size();
+    }
+
     public void remove(Class<? extends ISystem> type) {
         systems.remove(type);
+        HUDMessageRendererSystem.addTemporaryMessage("Removed " + type.getSimpleName(), 2000);
     }
 
     public void remove(Entity entity) {

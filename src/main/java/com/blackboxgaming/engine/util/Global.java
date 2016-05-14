@@ -128,6 +128,7 @@ public class Global {
     public static long lastPrint;
     public static Label BRICK_LABEL;
     public static Image swipeIcon;
+    public static boolean loaded;
 
     public static DirectionalShadowLight getShadowLight() {
         if (shadowLight == null) {

@@ -1,5 +1,6 @@
 package com.blackboxgaming.engine.managers;
 
+import com.blackboxgaming.engine.systems.render.HUDRendererSystem;
 import com.blackboxgaming.engine.systems.render.HealthBarRendererSystem;
 import com.blackboxgaming.engine.systems.render.LayerRendererSystem;
 import com.blackboxgaming.engine.systems.render.ModelRendererSystem;
@@ -134,8 +135,8 @@ public class EntityManager {
 
         // HUD
         if (entity.has(HUDItem.class)) {
-            if (Engine.systemManager.has(HUDSystem.class)) {
-                Engine.systemManager.get(HUDSystem.class).add(entity);
+            if (Engine.systemManager.has(HUDRendererSystem.class)) {
+                Engine.systemManager.get(HUDRendererSystem.class).add(entity);
             }
         }
 

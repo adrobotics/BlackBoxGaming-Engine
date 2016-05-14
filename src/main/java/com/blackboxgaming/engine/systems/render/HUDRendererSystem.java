@@ -1,7 +1,9 @@
-package com.blackboxgaming.engine.systems;
+package com.blackboxgaming.engine.systems.render;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -10,6 +12,9 @@ import com.badlogic.gdx.utils.Align;
 import com.blackboxgaming.engine.Engine;
 import com.blackboxgaming.engine.components.HUDItem;
 import com.blackboxgaming.engine.Entity;
+import com.blackboxgaming.engine.systems.AbstractSystem;
+import com.blackboxgaming.engine.systems.ConwaySystem;
+import com.blackboxgaming.engine.systems.PhysicsSystem;
 import com.blackboxgaming.engine.util.Global;
 import java.util.LinkedHashSet;
 
@@ -18,19 +23,25 @@ import java.util.LinkedHashSet;
  *
  * @author Adrian
  */
-public class HUDSystem extends AbstractSystem {
+public class HUDRendererSystem extends AbstractSystem {
 
     private final Stage stage = new Stage();
     private final Table table = new Table().padLeft(10).padBottom(10);
-    private final BitmapFont font = new BitmapFont();
+    private final BitmapFont font;
     private final Color fontColor = Color.RED;
     private final StringBuilder stringBuilder = new StringBuilder();
     private HUDItem hudItem;
     private Label label;
 
-    public HUDSystem() {
+    public HUDRendererSystem() {
         entities = new LinkedHashSet();
         requiredComponents.add(HUDItem.class);
+
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("assets/fonts/arial.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 16;
+        font = generator.generateFont(parameter);
+        generator.dispose();
     }
 
     @Override
@@ -113,6 +124,9 @@ public class HUDSystem extends AbstractSystem {
                 } else {
                     value = "";
                 }
+                break;
+            case "systems":
+                value = "" + Engine.systemManager.size();
                 break;
         }
         item.value = value;

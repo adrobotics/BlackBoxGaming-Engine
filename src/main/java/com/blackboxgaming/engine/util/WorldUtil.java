@@ -1,5 +1,6 @@
 package com.blackboxgaming.engine.util;
 
+import com.blackboxgaming.engine.systems.render.HUDRendererSystem;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -25,8 +26,8 @@ import static com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup.createWe
 public class WorldUtil {
 
     public static void addHUDItems() {
-        if (!Engine.systemManager.has(HUDSystem.class)) {
-            Engine.systemManager.addAfter(new HUDSystem(), ModelRendererSystem.class);
+        if (!Engine.systemManager.has(HUDRendererSystem.class)) {
+            Engine.systemManager.addAfter(new HUDRendererSystem(), ModelRendererSystem.class);
         }
         Entity hudItem;
         hudItem = new Entity();
@@ -43,6 +44,9 @@ public class WorldUtil {
         Engine.entityManager.add(hudItem);
         hudItem = new Entity();
         hudItem.add(new HUDItem("Physics"));
+        Engine.entityManager.add(hudItem);
+        hudItem = new Entity();
+        hudItem.add(new HUDItem("Systems"));
         Engine.entityManager.add(hudItem);
         hudItem = new Entity();
         hudItem.add(new HUDItem("Camera"));
