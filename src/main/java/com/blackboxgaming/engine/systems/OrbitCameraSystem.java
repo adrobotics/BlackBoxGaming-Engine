@@ -40,7 +40,7 @@ public class OrbitCameraSystem extends AbstractSystem {
         if (!accept(entity)) {
             return;
         }
-        if(entity.equals(target)){
+        if (entity.equals(target)) {
             return;
         }
         if (target != null) {
@@ -56,7 +56,7 @@ public class OrbitCameraSystem extends AbstractSystem {
     @Override
     public void remove(Entity entity) {
         if (entity.equals(target)) {
-            System.err.println("Should give this system something else to look at!");
+            System.out.println("Nothing to look at.");
         }
     }
 
@@ -74,7 +74,7 @@ public class OrbitCameraSystem extends AbstractSystem {
 
         camera.update();
     }
-
+    
     @Override
     public void dispose() {
         super.dispose();

@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.blackboxgaming.engine.Entity;
 import com.blackboxgaming.engine.collision.contactlistener.ContactListener2D;
 import com.blackboxgaming.engine.components.Enemy;
+import com.blackboxgaming.engine.components.Name;
 import com.blackboxgaming.engine.components.Physics2D;
 import com.blackboxgaming.engine.components.Puppet;
 import com.blackboxgaming.engine.components.Transform;
@@ -60,17 +61,30 @@ public class PhysicsSystem2D implements ISystem, Disposable {
     @Override
     public void update(float delta) {
         for (Entity entity : entities) {
+            entity.get(Transform.class).transform.getTranslation(position3D);
+            position2D.set(position3D.x, position3D.z);
+            Body body = entity.get(Physics2D.class).body;
+            float angle = -entity.get(Transform.class).transform.getRotation(quat).getYawRad();
+            body.setTransform(position2D, angle);
+        }
+
+        Global.getDynamicsWorld2D().step(Global.getDeltaInSeconds(), 6, 2);
+    }
+
+    public void updateDeprecated_realyOld_notUsedAnymore(float delta) {
+        for (Entity entity : entities) {
             if (entity.has(Velocity.class)) {
-                position3D.set(entity.get(Transform.class).transform.getTranslation(tmp));
+                entity.get(Transform.class).transform.getTranslation(position3D);
                 position2D.set(position3D.x, position3D.z);
                 velocity = entity.get(Velocity.class).linear;
                 angularVelocity = entity.get(Velocity.class).angular;
                 Body body = entity.get(Physics2D.class).body;
                 float angle = -entity.get(Transform.class).transform.getRotation(quat).getYawRad();
 
-                if (!velocity.isZero() || !angularVelocity.isZero() || !PlayerKeyListener.joystickRight.joystick.isZero() || ((PlayerKeyListener.clickRight || PlayerKeyListener.clickMiddle) && entity.has(Puppet.class))) {
-                    body.setTransform(position2D, angle);
-                }
+                body.setTransform(position2D, angle);
+//                if (!velocity.isZero() || !angularVelocity.isZero() || !PlayerKeyListener.joystickRight.joystick.isZero() || ((PlayerKeyListener.clickRight || PlayerKeyListener.clickMiddle) && entity.has(Puppet.class))) {
+//                    body.setTransform(position2D, angle);
+//                }
             }
         }
 
@@ -79,7 +93,7 @@ public class PhysicsSystem2D implements ISystem, Disposable {
         for (Entity entity : entities) {
             if (entity.has(Velocity.class)) {
                 if (!velocity.isZero() || !angularVelocity.isZero() || !PlayerKeyListener.joystickRight.joystick.isZero() || ((PlayerKeyListener.clickRight || PlayerKeyListener.clickMiddle) && entity.has(Puppet.class))) {
-                    if(entity.has(Enemy.class) && entity.get(Transform.class).changedDirection2D){
+                    if (entity.has(Enemy.class) && entity.get(Transform.class).changedDirection2D) {
                         entity.get(Transform.class).changedDirection2D = false;
                         continue;
                     }

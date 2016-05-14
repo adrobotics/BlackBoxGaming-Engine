@@ -84,19 +84,18 @@ public class WorldUtil {
         Engine.entityManager.add(player);
     }
 
-    public static void addPuppet() {
+    public static void addCameraFocus() {
         Entity puppet = new Entity();
         puppet.add(new Transform(0, 0.5f, 0));
-        puppet.add(new Model(ModelFactory.getCubeModel(1), Color.GREEN));
         puppet.add(new OrbitCameraFocus());
         puppet.add(new Puppet());
-        puppet.add(new Name("Puppet"));
+        puppet.add(new Name("Focus"));
         puppet.add(new Velocity());
         puppet.add(new Speed(10.0f, 5 * 36));
         Engine.entityManager.add(puppet);
     }
 
-    public static void addPhysics() {
+    public static void addGrid() {
         if (!Engine.systemManager.has(PhysicsSystem.class)) {
             Engine.systemManager.addAfter(new PhysicsSystem(), VelocitySystem.class);
         }
@@ -108,7 +107,7 @@ public class WorldUtil {
         Engine.entityManager.add(grid);
     }
 
-    public static void addObstacle(Vector3 position) {
+    public static void addObstacle(Vector3 position, Color color) {
         if (!Engine.systemManager.has(PhysicsSystem.class)) {
             Engine.systemManager.addAfter(new PhysicsSystem(), VelocitySystem.class);
         }
@@ -117,11 +116,20 @@ public class WorldUtil {
         }
         Entity obstacle = new Entity();
         obstacle.add(new Transform(position));
-        obstacle.add(new Model(ModelFactory.getCubeModel(1), Color.RED));
+        obstacle.add(new Model(ModelFactory.getCubeModel(1), color));
         obstacle.add(new Name("2D Obstacle"));
+        obstacle.add(new Health(100));
         obstacle.add(new Physics(CollisionShapeFactory.getCubeShape(1), 25, btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK, Constants.OBJECT_FLAG, Constants.ALL_FLAG, Collision.ACTIVE_TAG));
         obstacle.add(new Physics2D(CollisionShapeFactory2D.getBoxShape(0.5f, 0.5f), BodyDef.BodyType.DynamicBody, 1, obstacle.get(Transform.class).transform, false));
         Engine.entityManager.add(obstacle);
+    }
+
+    public static void addWall(Vector3 vector3, int width, int height) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                addObstacle(vector3.cpy().add(0, i, -width + j), Color.BROWN);
+            }
+        }
     }
 
 }
