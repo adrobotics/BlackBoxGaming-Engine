@@ -48,6 +48,8 @@ public class BlackBoxGame extends ApplicationAdapter {
         }
         Global.setCamera(-15f, 15f, 15f);
         Global.loaded = true;
+
+        System.out.println("Created " + this.getClass());
     }
 
     @Override
@@ -59,6 +61,7 @@ public class BlackBoxGame extends ApplicationAdapter {
     public void dispose() {
         System.out.println("Disposing " + this.getClass());
         Engine.dispose();
+        System.out.println("Done");
     }
 
 }

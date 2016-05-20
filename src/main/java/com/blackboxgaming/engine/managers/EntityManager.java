@@ -12,8 +12,10 @@ import com.blackboxgaming.engine.systems.*;
 import com.blackboxgaming.engine.systems.ai.FollowSystem;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -42,8 +44,40 @@ public class EntityManager {
         return map.get(entity.id);
     }
 
+    /**
+     * Returns all entities
+     *
+     * @return list of entities
+     */
+    public List<Entity> get() {
+        return new ArrayList(map.values());
+    }
+
+    /**
+     * Return Entity with this id
+     *
+     * @param id
+     * @return
+     */
     public Entity get(int id) {
         return map.get(id);
+    }
+
+    /**
+     * Returns all entities with a specific component
+     *
+     * @param component
+     * @return
+     */
+    public List<Entity> get(Class<? extends IComponent> component) {
+        List<Entity> entitySet = new ArrayList();
+        for (Map.Entry<Integer, Entity> entry : map.entrySet()) {
+            Entity entity = entry.getValue();
+            if (entity.has(component)) {
+                entitySet.add(entity);
+            }
+        }
+        return entitySet;
     }
 
     public void remove(Entity entity) {
@@ -205,11 +239,7 @@ public class EntityManager {
                 Engine.systemManager.get(ConwaySystem.class).add(entity);
             }
         }
-        
-        addToSystems_prototype(entity);
-    }
 
-    public List<Entity> getEntities() {
-        return new ArrayList(map.values());
+        addToSystems_prototype(entity);
     }
 }

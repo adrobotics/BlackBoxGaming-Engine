@@ -14,14 +14,13 @@ import com.blackboxgaming.engine.Engine;
 import com.blackboxgaming.engine.Entity;
 import com.blackboxgaming.engine.components.Death;
 import com.blackboxgaming.engine.components.HUDMessage;
+import com.blackboxgaming.engine.managers.SystemManager;
 import com.blackboxgaming.engine.systems.AbstractSystem;
 import com.blackboxgaming.engine.systems.TimedDeathSystem;
 import com.blackboxgaming.engine.util.Global;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  *
@@ -36,7 +35,7 @@ public class HUDMessageRendererSystem extends AbstractSystem {
     private Label label;
 
     public HUDMessageRendererSystem() {
-        this(32, Color.WHITE);
+        this(28, Color.WHITE);
     }
 
     public HUDMessageRendererSystem(int fontSize, Color textColor) {
