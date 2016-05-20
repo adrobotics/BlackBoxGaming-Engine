@@ -78,8 +78,11 @@ public class Model implements IComponent, Disposable {
     @Override
     public void dispose() {
         if (!someoneElseHandlesDisposing) {
-//            System.out.println("Disposing " + this.getClass());
-            modelInstance.model.dispose();
+            try {
+                modelInstance.model.dispose();
+            } catch (IllegalArgumentException ex) {
+                System.err.println("Error, model probably already disposed.");
+            }
         }
     }
 

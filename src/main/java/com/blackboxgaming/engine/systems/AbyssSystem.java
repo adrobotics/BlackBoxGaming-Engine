@@ -17,7 +17,7 @@ public class AbyssSystem extends AbstractSystem {
     private final Vector3 position = new Vector3();
 
     public AbyssSystem() {
-        this(5, 50);
+        this(10, 50);
     }
 
     /**

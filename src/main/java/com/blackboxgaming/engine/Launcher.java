@@ -29,6 +29,7 @@ class Launcher {
 //        config.x = -1;
 //        config.y = 10;
         LwjglApplication app = new LwjglApplication(new BlackBoxGame(), config);
+        System.out.println("Launched applications");
     }
     
     private static void setWindowSize(LwjglApplicationConfiguration config, Dimension dimension){

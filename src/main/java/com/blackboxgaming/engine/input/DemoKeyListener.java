@@ -41,6 +41,7 @@ import com.blackboxgaming.engine.systems.VelocitySystem;
 import com.blackboxgaming.engine.systems.WeaponSystem;
 import com.blackboxgaming.engine.systems.ai.FollowSystem;
 import com.blackboxgaming.engine.systems.render.HUDMessageRendererSystem;
+import com.blackboxgaming.engine.systems.render.ModelRendererSystem;
 import com.blackboxgaming.engine.util.Randomizer;
 import com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup;
 import static com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup.createWeapon;
@@ -60,7 +61,7 @@ public class DemoKeyListener implements InputProcessor {
             case Keys.NUM_1:
                 System.out.println("Adding ConwaySystem");
                 if (!Engine.systemManager.has(ConwaySystem.class)) {
-                    Engine.systemManager.add(new ConwaySystem(ConwaySystem.life5766, 200));
+                    Engine.systemManager.add(new ConwaySystem(ConwaySystem.life5766, 250));
                     System.out.println("Adding premordial soup");
                     ConwayUtil.createPremordialSoup(20, 4);
                     Entity hudItem = new Entity();
@@ -79,9 +80,9 @@ public class DemoKeyListener implements InputProcessor {
                 if (Engine.systemManager.has(ConwaySystem.class)) {
                     boolean toggle = Engine.systemManager.get(ConwaySystem.class).manualBreak;
                     Engine.systemManager.get(ConwaySystem.class).manualBreak = !toggle;
-                    if(toggle == true){
+                    if (toggle == true) {
                         HUDMessageRendererSystem.addTemporaryMessage("Started ConwaySystem");
-                    }else{
+                    } else {
                         HUDMessageRendererSystem.addTemporaryMessage("Stopped ConwaySystem");
                     }
                 }
@@ -134,17 +135,19 @@ public class DemoKeyListener implements InputProcessor {
             case Keys.NUM_5:
                 System.out.println("Adding follower system");
                 Engine.systemManager.add(new FollowSystem());
-                List<Entity> entities = new ArrayList();
-                for (Entity cell : Engine.entityManager.getEntities()) {
-                    if (cell.has(Cell.class)) {
-                        entities.add(cell);
-                    }
-                }
+                List<Entity> entities = Engine.entityManager.get(Cell.class);
                 for (Entity enemy : entities) {
+                    if (entities.size() > 1) {
+                        Entity newTarget;
+                        do {
+                            newTarget = entities.get(Randomizer.getRandomInteger(entities.size()));
+                        } while (newTarget.equals(enemy)); // so it won't select itself
+
 //                    enemy.add(new Enemy());
-                    enemy.add(new Follow(entities.get(Randomizer.getRandomInteger(entities.size())), 2));
-                    enemy.add(new Velocity(4f, 0, 0));
-                    Engine.entityManager.update(enemy);
+                        enemy.add(new Follow(newTarget, 2));
+                        enemy.add(new Velocity(4f, 0, 0));
+                        Engine.entityManager.update(enemy);
+                    }
                 }
                 break;
             case Keys.NUM_6:
@@ -156,12 +159,7 @@ public class DemoKeyListener implements InputProcessor {
                 Engine.systemManager.addAfter(new HealthBarRendererSystem(), ModelRendererSystem.class);
 
                 System.out.println("Making all cells into enemies");
-                List<Entity> entities2 = new ArrayList();
-                for (Entity cell : Engine.entityManager.getEntities()) {
-                    if (cell.has(Cell.class)) {
-                        entities2.add(cell);
-                    }
-                }
+                List<Entity> entities2 = Engine.entityManager.get(Cell.class);
                 for (Entity enemy : entities2) {
                     enemy.add(new Health(100));
 
@@ -175,11 +173,11 @@ public class DemoKeyListener implements InputProcessor {
                 break;
             case Keys.NUM_7:
                 System.out.println("Adding weapon to player");
-                for (Entity e : Engine.entityManager.getEntities()) {
+                for (Entity e : Engine.entityManager.get()) {
                     if (e.has(OrbitCameraFocus.class)) {
                         System.out.println("Adding weapon to player x");
 
-                        e.add(new Health(100));
+//                        e.add(new Health(100));
                         e.add(new Model(ModelFactory.getCubeModel(1), Color.GREEN));
                         e.add(new Physics(CollisionShapeFactory.getCubeShape(1), 25, btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK, Constants.OBJECT_FLAG, Constants.ALL_FLAG, Collision.ACTIVE_TAG));
                         e.add(new Physics2D(CollisionShapeFactory2D.getBoxShape(0.5f, 0.5f), BodyDef.BodyType.DynamicBody, 1, e.get(Transform.class).transform, false));
@@ -211,37 +209,44 @@ public class DemoKeyListener implements InputProcessor {
     }
 
     @Override
-    public boolean keyUp(int i) {
+    public boolean keyUp(int i
+    ) {
         return false;
     }
 
     @Override
-    public boolean keyTyped(char c) {
+    public boolean keyTyped(char c
+    ) {
         return false;
     }
 
     @Override
-    public boolean touchDown(int i, int i1, int i2, int i3) {
+    public boolean touchDown(int i, int i1, int i2, int i3
+    ) {
         return false;
     }
 
     @Override
-    public boolean touchUp(int i, int i1, int i2, int i3) {
+    public boolean touchUp(int i, int i1, int i2, int i3
+    ) {
         return false;
     }
 
     @Override
-    public boolean touchDragged(int i, int i1, int i2) {
+    public boolean touchDragged(int i, int i1, int i2
+    ) {
         return false;
     }
 
     @Override
-    public boolean mouseMoved(int i, int i1) {
+    public boolean mouseMoved(int i, int i1
+    ) {
         return false;
     }
 
     @Override
-    public boolean scrolled(int i) {
+    public boolean scrolled(int i
+    ) {
         return false;
     }
 

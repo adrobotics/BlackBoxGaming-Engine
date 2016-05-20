@@ -31,7 +31,7 @@ public class SystemManager implements Disposable {
             if (!(system instanceof HUDMessageRendererSystem)) {
                 HUDMessageRendererSystem.addTemporaryMessage("Added " + system.getClass().getSimpleName());
             }
-            for (Entity entity : Engine.entityManager.getEntities()) {
+            for (Entity entity : Engine.entityManager.get()) {
                 if (system instanceof AbstractSystem) {
                     system.add(entity);
                 }
@@ -55,7 +55,7 @@ public class SystemManager implements Disposable {
                 newOrder.put(key, value);
             }
             systems = newOrder;
-            for (Entity entity : Engine.entityManager.getEntities()) {
+            for (Entity entity : Engine.entityManager.get()) {
                 if (system instanceof AbstractSystem) {
                     system.add(entity);
                 }
@@ -79,7 +79,7 @@ public class SystemManager implements Disposable {
                 }
             }
             systems = newOrder;
-            for (Entity entity : Engine.entityManager.getEntities()) {
+            for (Entity entity : Engine.entityManager.get()) {
                 if (system instanceof AbstractSystem) {
                     system.add(entity);
                 }
@@ -101,7 +101,7 @@ public class SystemManager implements Disposable {
 
     public void remove(Class<? extends ISystem> type) {
         systems.remove(type);
-        HUDMessageRendererSystem.addTemporaryMessage("Removed " + type.getSimpleName(), 2000);
+        HUDMessageRendererSystem.addTemporaryMessage("Removed " + type.getSimpleName());
     }
 
     public void remove(Entity entity) {

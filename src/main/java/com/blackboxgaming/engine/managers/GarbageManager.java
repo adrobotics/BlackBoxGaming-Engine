@@ -24,14 +24,19 @@ public class GarbageManager implements Disposable {
     public void removeGarbage() {
         for (Entity entity : entities) {
             if (entity.has(Parent.class)) {
+                // doesn't handle multi level children
                 for (Entity child : entity.get(Parent.class).children) {
-                    Engine.systemManager.remove(child);
+                    remove(child);
                 }
             }
-            Engine.systemManager.remove(entity);
-            Engine.entityManager.remove(entity);
+            remove(entity);
         }
         entities.clear();
+    }
+
+    private void remove(Entity entity) {
+        Engine.systemManager.remove(entity);
+        Engine.entityManager.remove(entity);
     }
 
     @Override
