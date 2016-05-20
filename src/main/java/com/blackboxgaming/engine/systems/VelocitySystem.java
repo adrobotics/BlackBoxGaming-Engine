@@ -17,7 +17,8 @@ public class VelocitySystem extends AbstractSystem {
     private Vector3 linear;
     private Vector3 angular;
 
-    public VelocitySystem() {
+    @Override
+    public void markRequiredComponents() {
         requiredComponents.add(Velocity.class);
         requiredComponents.add(Transform.class);
     }

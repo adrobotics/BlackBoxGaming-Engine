@@ -13,7 +13,8 @@ import com.blackboxgaming.engine.components.Health;
  */
 public class HealthSystem extends AbstractSystem {
 
-    public HealthSystem() {
+    @Override
+    public void markRequiredComponents() {
         requiredComponents.add(Health.class);
     }
 

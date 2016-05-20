@@ -16,6 +16,7 @@ import com.blackboxgaming.engine.factories.WeaponFactory;
 import com.blackboxgaming.engine.global.constants.Constants;
 import com.blackboxgaming.engine.systems.*;
 import com.blackboxgaming.engine.systems.render.HealthBarRendererSystem;
+import com.blackboxgaming.engine.systems.render.MinimapRendererSystem;
 import com.blackboxgaming.engine.systems.render.ModelRendererSystem;
 import static com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup.createWeapon;
 
@@ -82,6 +83,7 @@ public class WorldUtil {
         parent.add(createWeapon(player, WeaponFactory.WEAPON_PLASMA, new Vector3(0, 0, -0.5f)));
         player.add(parent);
         Engine.entityManager.add(player);
+        MinimapRendererSystem.focusOn(player);
     }
 
     public static void addCameraFocus() {
@@ -104,6 +106,7 @@ public class WorldUtil {
         grid.add(new Transform(0, 0, 0));
         grid.add(new Model(ModelFactory.getGridModel((int) 50)));
         grid.add(new Physics(CollisionShapeFactory.getBoxShape(50, 1, 50, new Vector3(0, -0.5f, 0)), 0, btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT, Constants.GROUND_FLAG, (short) 0, Collision.DISABLE_DEACTIVATION));
+        grid.add(new MinimapModel(Color.LIGHT_GRAY));
         Engine.entityManager.add(grid);
     }
 

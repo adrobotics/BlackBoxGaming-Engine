@@ -31,7 +31,6 @@ public class HealthBarRendererSystem implements ISystem, Disposable {
 
     private final List<Entity> entities = new ArrayList();
     private Health health;
-    private final ShapeRenderer shapeRenderer;
     private final ModelBuilder modelBuilder;
     private final float width = 2f;
     private final float height = 0.25f;
@@ -56,7 +55,6 @@ public class HealthBarRendererSystem implements ISystem, Disposable {
 
     public HealthBarRendererSystem() {
         this.modelBuilder = new ModelBuilder();
-        this.shapeRenderer = new ShapeRenderer();
     }
 
     @Override
@@ -159,9 +157,6 @@ public class HealthBarRendererSystem implements ISystem, Disposable {
         }
         if (frontPlate != null && frontPlate.model != null) {
             frontPlate.model.dispose();
-        }
-        if (shapeRenderer != null) {
-            shapeRenderer.dispose();
         }
     }
 

@@ -25,10 +25,14 @@ public class PhysicsSystem extends AbstractSystem {
     public static ContactListener contactListener;
 
     public PhysicsSystem() {
-        requiredComponents.add(Physics.class);
-        requiredComponents.add(Transform.class);
         Bullet.init();
         Global.getDynamicsWorld();
+    }
+    
+    @Override
+    public void markRequiredComponents() {
+        requiredComponents.add(Physics.class);
+        requiredComponents.add(Transform.class);
     }
 
     public int getCount() {

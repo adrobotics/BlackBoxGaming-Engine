@@ -35,13 +35,17 @@ public class HUDRendererSystem extends AbstractSystem {
 
     public HUDRendererSystem() {
         entities = new LinkedHashSet();
-        requiredComponents.add(HUDItem.class);
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("assets/fonts/arial.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 16;
         font = generator.generateFont(parameter);
         generator.dispose();
+    }
+
+    @Override
+    public void markRequiredComponents() {
+        requiredComponents.add(HUDItem.class);
     }
 
     @Override

@@ -40,7 +40,6 @@ public class HUDMessageRendererSystem extends AbstractSystem {
 
     public HUDMessageRendererSystem(int fontSize, Color textColor) {
         entities = new LinkedHashSet();
-        requiredComponents.add(HUDMessage.class);
 
         FreeTypeFontParameter parameter = new FreeTypeFontParameter();
         parameter.size = fontSize;
@@ -53,6 +52,11 @@ public class HUDMessageRendererSystem extends AbstractSystem {
 
         labelStyle = new LabelStyle(font, textColor);
         stage.addActor(table);
+    }
+
+    @Override
+    public void markRequiredComponents() {
+        requiredComponents.add(HUDMessage.class);
     }
 
     @Override

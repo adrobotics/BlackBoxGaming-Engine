@@ -34,6 +34,10 @@ public class OrbitCameraSystem extends AbstractSystem {
         orbitCameraController = new OrbitCameraListener(camera);
         Engine.inputManager.add(orbitCameraController);
     }
+    
+    @Override
+    public void markRequiredComponents() {
+    }
 
     @Override
     public void add(Entity entity) {

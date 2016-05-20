@@ -33,10 +33,11 @@ public class BlackBoxGame extends ApplicationAdapter {
 
         // render
         Engine.systemManager.add(new ModelRendererSystem());
+        Engine.systemManager.addAfter(new MinimapRendererSystem(), ModelRendererSystem.class);
 
         // world setup
         WorldUtil.addHUDItems();
-        boolean demo = true;
+        boolean demo = false;
         if (demo) {
             WorldUtil.addCameraFocus();
         } else {
