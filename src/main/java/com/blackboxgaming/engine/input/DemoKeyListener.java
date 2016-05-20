@@ -41,6 +41,7 @@ import com.blackboxgaming.engine.systems.VelocitySystem;
 import com.blackboxgaming.engine.systems.WeaponSystem;
 import com.blackboxgaming.engine.systems.ai.FollowSystem;
 import com.blackboxgaming.engine.systems.render.HUDMessageRendererSystem;
+import com.blackboxgaming.engine.systems.render.ModelRendererSystem;
 import com.blackboxgaming.engine.util.Randomizer;
 import com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup;
 import static com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup.createWeapon;
@@ -179,7 +180,7 @@ public class DemoKeyListener implements InputProcessor {
                     if (e.has(OrbitCameraFocus.class)) {
                         System.out.println("Adding weapon to player x");
 
-                        e.add(new Health(100));
+//                        e.add(new Health(100));
                         e.add(new Model(ModelFactory.getCubeModel(1), Color.GREEN));
                         e.add(new Physics(CollisionShapeFactory.getCubeShape(1), 25, btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK, Constants.OBJECT_FLAG, Constants.ALL_FLAG, Collision.ACTIVE_TAG));
                         e.add(new Physics2D(CollisionShapeFactory2D.getBoxShape(0.5f, 0.5f), BodyDef.BodyType.DynamicBody, 1, e.get(Transform.class).transform, false));
