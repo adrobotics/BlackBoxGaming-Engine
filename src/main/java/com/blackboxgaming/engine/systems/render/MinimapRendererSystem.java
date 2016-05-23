@@ -31,12 +31,15 @@ public class MinimapRendererSystem extends AbstractSystem {
 
     private final ShapeRenderer renderer = new ShapeRenderer();
     private final float size = 200;
+    private final float halfSize = size / 2f;
     private final float scale = 4;
-    private final float centerOffsetX = Gdx.graphics.getWidth() - size / 2f - 25;
-    private final float centerOffsetY = Gdx.graphics.getHeight() - size / 2f - 25;
-    private final Vector3 position = new Vector3();
+    private final float margin = 25;
+    private final float centerOffsetX = Gdx.graphics.getWidth() - halfSize - margin;
+    private final float centerOffsetY = Gdx.graphics.getHeight() - halfSize - margin;
+    private final Vector2 focus = new Vector2();
+    private final Vector2 position = new Vector2();
     private Model model;
-    private static Matrix4 focusTransform;
+    private static Matrix4 focusTransform = new Matrix4();
 
     public MinimapRendererSystem() {
         entities = new LinkedHashSet();
@@ -71,66 +74,88 @@ public class MinimapRendererSystem extends AbstractSystem {
         // margins
         renderer.begin(ShapeType.Line);
         renderer.setColor(Color.BLACK);
-        renderer.rect(centerOffsetX - size / 2f, centerOffsetY - size / 2f, size, size);
+        renderer.identity();
+        renderer.translate(centerOffsetX, centerOffsetY, 0);
+        renderer.rect(-halfSize, -halfSize, size, size);
         renderer.end();
 
+        // scale and invert y for center focus point
+        focus.set(VUtil.toVector2(focusTransform.getTranslation(new Vector3()))).scl(scale).scl(1, -1);
+
         renderer.begin(ShapeType.Filled);
-        renderer.setColor(Color.RED);
+        renderer.identity();
+        renderer.translate(centerOffsetX - focus.x, centerOffsetY - focus.y, 0);
         for (Entity entity : entities) {
             if (entity.has(MinimapModel.class) && entity.get(MinimapModel.class).ignore) {
+                // skip if set to ignore
                 continue;
             }
-            entity.get(Transform.class).transform.getTranslation(position);
+
+            // color
             model = entity.get(Model.class);
-            Vector2 position2D = VUtil.toVector2(position);
             if (entity.has(MinimapModel.class)) {
+                // get color from component
                 renderer.setColor(entity.get(MinimapModel.class).color);
             } else {
+                // get color from model
                 renderer.setColor(((ColorAttribute) (model.modelInstance.materials.get(0).get(ColorAttribute.Diffuse))).color);
             }
-            float focusOffsetX = 0;
-            float focusOffsetY = 0;
-            if (focusTransform != null) {
-                focusOffsetX = focusTransform.getTranslation(new Vector3()).x;
-                focusOffsetY = focusTransform.getTranslation(new Vector3()).z;
-            }
 
-            // I was really tired while writing this part :))
-            float x = position2D.x * scale + centerOffsetX - model.boundingBox.getWidth() * scale / 2f - focusOffsetX * scale;
-            float trueX = x;
-            float y = position2D.y * scale + centerOffsetY - model.boundingBox.getDepth() * scale / 2f - focusOffsetY * scale;
-            float trueY = y;
-            if (x < centerOffsetX - size / 2f) {
-                x = centerOffsetX - size / 2f;
-            }
-            if (y < centerOffsetY - size / 2f) {
-                y = centerOffsetY - size / 2f;
-            }
-            
-            if(trueX > centerOffsetX + size / 2f || trueY > centerOffsetY + size / 2f){
-                continue;
-            }
-
+            // position and width of object, invert y
+            position.set(VUtil.toVector2(entity.get(Transform.class).transform.getTranslation(new Vector3()))).scl(scale).scl(1, -1);
             float width = model.boundingBox.getWidth() * scale;
             float height = model.boundingBox.getDepth() * scale;
-            
-            if(trueX + width < centerOffsetX - size / 2f || trueY + height < centerOffsetY - size / 2f){
-                continue;
+
+            // drawing variables
+            float drawWidth = width;
+            float drawHeight = height;
+            float drawX = position.x - drawWidth / 2f;
+            float drawY = position.y - drawHeight / 2f;
+
+            if (drawX + drawWidth >= focus.x + halfSize) {
+                if (drawX >= focus.x + halfSize) {
+                    // outside right
+                    continue;
+                } else {
+                    // partially inside
+                    drawWidth = focus.x + halfSize - drawX;
+                }
             }
-            
-            if (trueX + width > centerOffsetX + size / 2f) {
-                width = centerOffsetX + size / 2f - trueX;
-            } else if (trueX + width < centerOffsetX + size / 2f) {
-                width -= x - trueX;
+            if (drawX <= focus.x - halfSize) {
+                if (drawX + drawWidth <= focus.x - halfSize) {
+                    // outside left
+                    continue;
+                } else {
+                    // partially inside
+                    drawWidth -= focus.x - halfSize - drawX;
+                    drawX = focus.x - halfSize;
+                }
             }
-            if (trueY + height > centerOffsetY + size / 2f) {
-                height = centerOffsetY + size / 2f - trueY;
-            } else if (trueY + height < centerOffsetY + size / 2f) {
-                height -= y - trueY;
+            if (drawY + drawHeight >= focus.y + halfSize) {
+                if (drawY >= focus.y + halfSize) {
+                    // outside top
+                    continue;
+                } else {
+                    // partially inside
+                    drawHeight = focus.y + halfSize - drawY;
+                }
             }
-            
-            renderer.rect(x, y, width, height);
+            if (drawY <= focus.y - halfSize) {
+                if (drawY + drawHeight <= focus.y - halfSize) {
+                    // outside bottom
+                    continue;
+                } else {
+                    // partially inside
+                    drawHeight -= focus.y - halfSize - drawY;
+                    drawY = focus.y - halfSize;
+                }
+            }
+
+            // render
+            renderer.rect(drawX, drawY, drawWidth, drawHeight);
         }
+        // focus orientation
+        renderer.line(focus, (VUtil.toVector2(focusTransform.cpy().translate(2, 0, 0).getTranslation(new Vector3()))).scl(scale).scl(1, -1));
         renderer.end();
     }
 
@@ -144,11 +169,8 @@ public class MinimapRendererSystem extends AbstractSystem {
 
         @Override
         public int compare(Entity o1, Entity o2) {
-            float o1Y = o1.get(Transform.class
-            ).transform.getTranslation(position).y;
-
-            float o2Y = o2.get(Transform.class
-            ).transform.getTranslation(position).y;
+            float o1Y = o1.get(Transform.class).transform.getTranslation(new Vector3()).y;
+            float o2Y = o2.get(Transform.class).transform.getTranslation(new Vector3()).y;
             if (o1Y > o2Y) {
                 return 1;
             } else if (o1Y < o2Y) {
