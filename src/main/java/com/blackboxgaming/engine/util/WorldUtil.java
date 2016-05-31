@@ -162,6 +162,7 @@ public class WorldUtil {
         }
         Entity text = new Entity();
         text.add(new TextMessage("Demo keys - use in this order\n"
+                + "Ex: 1 2 1 1 3 4 5 6 7 8\n"
                 + "[Mouse 2] Rotate view\n"
                 + "\n"
                 + "Conway's Game of Life\n"
@@ -184,7 +185,7 @@ public class WorldUtil {
                 + "      can be pressed several times\n"
                 + "Enemies shoot whenever you shoot\n"
                 + "Enemies rotate when hit, they can hit each other aswell",
-                10, Gdx.graphics.getHeight() - 370, Color.WHITE, Align.left));
+                10, Gdx.graphics.getHeight() - 390, Color.WHITE, Align.left));
         Engine.entityManager.add(text);
     }
 
