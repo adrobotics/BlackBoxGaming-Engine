@@ -20,6 +20,10 @@ public class AbyssSystem extends AbstractSystem {
         this(10, 50);
     }
 
+    @Override
+    public void markRequiredComponents() {
+    }
+
     /**
      * Marks entities for deletion that exceed the world bounds.
      *

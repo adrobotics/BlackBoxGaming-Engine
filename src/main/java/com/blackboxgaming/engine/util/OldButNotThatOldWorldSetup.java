@@ -25,6 +25,7 @@ import com.blackboxgaming.engine.components.Child;
 import com.blackboxgaming.engine.components.Damage;
 import com.blackboxgaming.engine.components.Enemy;
 import com.blackboxgaming.engine.components.Health;
+import com.blackboxgaming.engine.components.MinimapModel;
 import com.blackboxgaming.engine.components.Name;
 import com.blackboxgaming.engine.factories.ModelFactory;
 import com.blackboxgaming.engine.global.constants.Constants;
@@ -384,6 +385,7 @@ public class OldButNotThatOldWorldSetup {
         Entity entity = new Entity();
         entity.add(new Transform());
         entity.add(new Model(ModelFactory.getBoxModel(1.5f, 0.125f, 0.125f)));
+        entity.add(new MinimapModel(true));
         entity.add(WeaponFactory.getWeapon(weaponType, new Matrix4().setToTranslation(new Vector3(0.75f, 0, 0))));
         entity.add(new Child(parent, relativePositionToParent));
         Engine.entityManager.add(entity);

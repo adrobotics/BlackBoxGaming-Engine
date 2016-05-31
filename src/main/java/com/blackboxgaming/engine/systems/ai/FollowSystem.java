@@ -21,7 +21,8 @@ import java.util.List;
  */
 public class FollowSystem extends AbstractSystem {
 
-    public FollowSystem() {
+    @Override
+    public void markRequiredComponents() {
         requiredComponents.add(Follow.class);
         requiredComponents.add(Transform.class);
     }

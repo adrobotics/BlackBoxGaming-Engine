@@ -13,6 +13,7 @@ import com.blackboxgaming.engine.systems.conway.ConwayUtil;
 import com.blackboxgaming.engine.components.Cell;
 import com.blackboxgaming.engine.components.HUDItem;
 import com.blackboxgaming.engine.components.Health;
+import com.blackboxgaming.engine.components.MinimapModel;
 import com.blackboxgaming.engine.components.Model;
 import com.blackboxgaming.engine.components.Name;
 import com.blackboxgaming.engine.components.OrbitCameraFocus;
@@ -114,6 +115,7 @@ public class DemoKeyListener implements InputProcessor {
                 grid.add(new Transform(0, 0, 0));
                 grid.add(new Model(ModelFactory.getGridModel((int) 50)));
                 grid.add(new Physics(CollisionShapeFactory.getBoxShape(50, 1, 50, new Vector3(0, -0.5f, 0)), 0, btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT, Constants.GROUND_FLAG, (short) 0, Collision.DISABLE_DEACTIVATION));
+                grid.add(new MinimapModel(Color.LIGHT_GRAY));
                 Engine.entityManager.add(grid);
                 HUDMessageRendererSystem.addTemporaryMessage("Added ground");
                 break;

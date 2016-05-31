@@ -7,15 +7,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Abstract system class, uses a set to store entities, doesn't allow duplicates.
+ * Abstract system class, uses a set to store entities, doesn't allow
+ * duplicates.
  *
  * @author adrian.popa
  */
 public abstract class AbstractSystem implements ISystem, Disposable {
 
     /**
-     * Set of entities this systems will effect. Intentionally not final so that you can override and use HashMap for
-     * speed (default), LinkedHashMap for insertion order or TreeSet for sorted order.
+     * Set of entities this systems will effect. Intentionally not final so that
+     * you can override and use HashMap for speed (default), LinkedHashMap for
+     * insertion order or TreeSet for sorted order.
      */
     protected Set<Entity> entities = new HashSet();
 
@@ -24,8 +26,14 @@ public abstract class AbstractSystem implements ISystem, Disposable {
      */
     protected final Set<Class<? extends IComponent>> requiredComponents = new HashSet();
 
+    // initialisation block used to mark requiredComponents
+    {
+        markRequiredComponents();
+    }
+
     /**
-     * Adds this entity to this system, doesn't do anything if the entity is already present.
+     * Adds this entity to this system, doesn't do anything if the entity is
+     * already present.
      *
      * @param entity
      */
@@ -64,6 +72,12 @@ public abstract class AbstractSystem implements ISystem, Disposable {
         }
         return true;
     }
+
+    /**
+     * Specify what components an entity needs to have in order to be affected
+     * by this system by adding it to {@link #requiredComponents}.
+     */
+    public abstract void markRequiredComponents();
 
     /**
      * Should update all entities.
