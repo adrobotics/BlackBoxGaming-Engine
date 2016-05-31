@@ -1,11 +1,13 @@
 package com.blackboxgaming.engine.util;
 
+import com.badlogic.gdx.Gdx;
 import com.blackboxgaming.engine.systems.render.HUDRendererSystem;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.bullet.collision.Collision;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.utils.Align;
 import com.blackboxgaming.engine.Engine;
 import com.blackboxgaming.engine.Entity;
 import com.blackboxgaming.engine.components.*;
@@ -18,6 +20,7 @@ import com.blackboxgaming.engine.systems.*;
 import com.blackboxgaming.engine.systems.render.HealthBarRendererSystem;
 import com.blackboxgaming.engine.systems.render.MinimapRendererSystem;
 import com.blackboxgaming.engine.systems.render.ModelRendererSystem;
+import com.blackboxgaming.engine.systems.render.TextRendererSystem;
 import static com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup.createWeapon;
 
 /**
@@ -95,6 +98,7 @@ public class WorldUtil {
         puppet.add(new Velocity());
         puppet.add(new Speed(10.0f, 5 * 36));
         Engine.entityManager.add(puppet);
+        MinimapRendererSystem.focusOn(puppet);
     }
 
     public static void addGrid() {
@@ -133,6 +137,55 @@ public class WorldUtil {
                 addObstacle(vector3.cpy().add(0, i, -width + j), Color.BROWN);
             }
         }
+    }
+
+    public static void addKeyText() {
+        if (!Engine.systemManager.has(TextRendererSystem.class)) {
+            Engine.systemManager.addAfter(new TextRendererSystem(), ModelRendererSystem.class);
+        }
+        Entity text = new Entity();
+        text.add(new TextMessage("Keys\n"
+                + "[W, A, S, D] Move\n"
+                + "[Q, E] Rotate\n"
+                + "[Space] Shoot\n"
+                + "[Shift] Sprint\n"
+                + "[Mouse 2, 3] Rotate view\n"
+                + "[Scroll] Zoom"
+                + "[Esc] Exit",
+                10, 180, Color.GREEN, Align.left));
+        Engine.entityManager.add(text);
+    }
+
+    public static void addDemoText() {
+        if (!Engine.systemManager.has(TextRendererSystem.class)) {
+            Engine.systemManager.addAfter(new TextRendererSystem(), ModelRendererSystem.class);
+        }
+        Entity text = new Entity();
+        text.add(new TextMessage("Demo keys - use in this order\n"
+                + "[Mouse 2] Rotate view\n"
+                + "\n"
+                + "Conway's Game of Life\n"
+                + "[1] Create/Remove cells\n"
+                + "[2] Start/Stop game of life\n"
+                + "[G] Add glider (remove other cells first)\n"
+                + "       also don't forget to start with [2]\n"
+                + "[1], [2], [G] can be pressed several times\n"
+                + "\n"
+                + "\n"
+                + "To continue make sure that there are cells on the screen\n"
+                + "If not, press [1] once or twice\n"
+                + "[3] Add physics to world\n"
+                + "[4] Add physics to cells\n"
+                + "[5] Make cells follow each other\n"
+                + "[6] Make cells fight each other\n"
+                + "\n"
+                + "[7] Create player\n"
+                + "[8] Add enemies\n"
+                + "      can be pressed several times\n"
+                + "Enemies shoot whenever you shoot\n"
+                + "Enemies rotate when hit, they can hit each other aswell",
+                10, Gdx.graphics.getHeight() - 370, Color.WHITE, Align.left));
+        Engine.entityManager.add(text);
     }
 
 }

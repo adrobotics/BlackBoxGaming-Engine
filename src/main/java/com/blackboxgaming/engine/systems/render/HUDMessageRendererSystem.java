@@ -35,7 +35,7 @@ public class HUDMessageRendererSystem extends AbstractSystem {
     private Label label;
 
     public HUDMessageRendererSystem() {
-        this(28, Color.WHITE);
+        this(18, Color.WHITE);
     }
 
     public HUDMessageRendererSystem(int fontSize, Color textColor) {
@@ -44,7 +44,7 @@ public class HUDMessageRendererSystem extends AbstractSystem {
         FreeTypeFontParameter parameter = new FreeTypeFontParameter();
         parameter.size = fontSize;
         parameter.borderColor = Color.BLACK;
-        parameter.borderWidth = 3;
+        parameter.borderWidth = 1;
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("assets/fonts/arial.ttf"));
         font = generator.generateFont(parameter);

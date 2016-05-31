@@ -46,6 +46,7 @@ import com.blackboxgaming.engine.systems.render.ModelRendererSystem;
 import com.blackboxgaming.engine.util.Randomizer;
 import com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup;
 import static com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup.createWeapon;
+import com.blackboxgaming.engine.util.WorldUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,7 @@ import java.util.Map;
  * @author Adrian
  */
 public class DemoKeyListener implements InputProcessor {
-
+    
     @Override
     public boolean keyDown(int key) {
         switch (key) {
@@ -175,6 +176,7 @@ public class DemoKeyListener implements InputProcessor {
                 break;
             case Keys.NUM_7:
                 System.out.println("Adding weapon to player");
+                WorldUtil.addKeyText();
                 for (Entity e : Engine.entityManager.get()) {
                     if (e.has(OrbitCameraFocus.class)) {
                         System.out.println("Adding weapon to player x");

@@ -34,18 +34,21 @@ public class BlackBoxGame extends ApplicationAdapter {
         // render
         Engine.systemManager.add(new ModelRendererSystem());
         Engine.systemManager.addAfter(new MinimapRendererSystem(), ModelRendererSystem.class);
+        Engine.systemManager.addAfter(new TextRendererSystem(), ModelRendererSystem.class);
 
         // world setup
         WorldUtil.addHUDItems();
-        boolean demo = false;
+        boolean demo = true;
         if (demo) {
             WorldUtil.addCameraFocus();
+            WorldUtil.addDemoText();
         } else {
             WorldUtil.addGrid();
             WorldUtil.addPlayer();
             WorldUtil.addObstacle(new Vector3(5, 0.5f, 0), Color.BLUE);
             WorldUtil.addObstacle(new Vector3(0, 0.5f, 5), Color.RED);
             WorldUtil.addWall(new Vector3(10, 0.5f, 5), 5, 5);
+            WorldUtil.addKeyText();
         }
         Global.setCamera(-15f, 15f, 15f);
         Global.loaded = true;
