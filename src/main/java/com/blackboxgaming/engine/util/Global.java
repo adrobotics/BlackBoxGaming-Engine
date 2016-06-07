@@ -49,6 +49,7 @@ public class Global {
     public static Button scoreButton;
     public static Label LEVEL_LABEL;
     public static Label HEALTH_LABEL;
+    public static boolean demoHelpMessage;
 
     // debug
     public static boolean DEBUG_FRUSTRUM_CULLING_SHAPES = false;

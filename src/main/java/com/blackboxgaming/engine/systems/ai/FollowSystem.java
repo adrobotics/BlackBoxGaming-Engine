@@ -59,7 +59,7 @@ public class FollowSystem extends AbstractSystem {
                 .rotate(Vector3.Y, 90)
                 .trn(followerV3);
 
-        if (followerV3.dst(targetVector3) > followerComponent.distance) {
+        if (followerV3.dst(targetVector3) > followerComponent.distance && Engine.entityManager.has(target)) {
             if (follower.has(Parent.class)) {
                 for (Entity child : follower.get(Parent.class).children) {
                     if (child.has(Weapon.class)) {

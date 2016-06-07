@@ -43,6 +43,7 @@ import com.blackboxgaming.engine.systems.WeaponSystem;
 import com.blackboxgaming.engine.systems.ai.FollowSystem;
 import com.blackboxgaming.engine.systems.render.HUDMessageRendererSystem;
 import com.blackboxgaming.engine.systems.render.ModelRendererSystem;
+import com.blackboxgaming.engine.util.Global;
 import com.blackboxgaming.engine.util.Randomizer;
 import com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup;
 import static com.blackboxgaming.engine.util.OldButNotThatOldWorldSetup.createWeapon;
@@ -56,7 +57,7 @@ import java.util.Map;
  * @author Adrian
  */
 public class DemoKeyListener implements InputProcessor {
-    
+
     @Override
     public boolean keyDown(int key) {
         switch (key) {
@@ -207,6 +208,21 @@ public class DemoKeyListener implements InputProcessor {
                 dragon.add(new Transform());
                 dragon.add(new Model(Engine.assetManager.getModel("dragon/dragon.g3db")));
                 Engine.entityManager.add(dragon);
+                break;
+            case Keys.H:
+                Global.demoHelpMessage = !Global.demoHelpMessage;
+                if (Global.demoHelpMessage) {
+                    // add demo help message
+                    WorldUtil.addDemoText();
+                } else {
+                    // remove demo help message
+                    for (Entity namedEntity : Engine.entityManager.get(Name.class)) {
+                        if (namedEntity.get(Name.class).value.equals("Demo help message")) {
+                            Engine.garbageManager.markForDeletion(namedEntity);
+                            break;
+                        }
+                    }
+                }
                 break;
         }
         return false;

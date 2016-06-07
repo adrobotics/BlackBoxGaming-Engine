@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.blackboxgaming.engine.Engine;
@@ -40,6 +41,10 @@ public class MinimapRendererSystem extends AbstractSystem {
     private final Vector2 position = new Vector2();
     private Model model;
     private static Matrix4 focusTransform = new Matrix4();
+    private static Matrix4 objectTransform = new Matrix4();
+    private final static Quaternion tmp = new Quaternion();
+    public static boolean rotateIcons;
+    public static boolean focusOrientation;
 
     public MinimapRendererSystem() {
         entities = new LinkedHashSet();
@@ -102,7 +107,8 @@ public class MinimapRendererSystem extends AbstractSystem {
             }
 
             // position and width of object, invert y
-            position.set(VUtil.toVector2(entity.get(Transform.class).transform.getTranslation(new Vector3()))).scl(scale).scl(1, -1);
+            objectTransform = entity.get(Transform.class).transform;
+            position.set(VUtil.toVector2(objectTransform.getTranslation(new Vector3()))).scl(scale).scl(1, -1);
             float width = model.boundingBox.getWidth() * scale;
             float height = model.boundingBox.getDepth() * scale;
 
@@ -152,10 +158,16 @@ public class MinimapRendererSystem extends AbstractSystem {
             }
 
             // render
-            renderer.rect(drawX, drawY, drawWidth, drawHeight);
+            if (rotateIcons) {
+                renderer.rect(drawX, drawY, drawWidth / 2f, drawHeight / 2f, drawWidth, drawHeight, 1, 1, objectTransform.getRotation(tmp).getYaw());
+            } else {
+                renderer.rect(drawX, drawY, drawWidth, drawHeight);
+            }
         }
-        // focus orientation
-        renderer.line(focus, (VUtil.toVector2(focusTransform.cpy().translate(2, 0, 0).getTranslation(new Vector3()))).scl(scale).scl(1, -1));
+        if (focusOrientation) {
+            renderer.setColor(Color.BLACK);
+            renderer.line(focus, (VUtil.toVector2(focusTransform.cpy().translate(2, 0, 0).getTranslation(new Vector3()))).scl(scale).scl(1, -1));
+        }
         renderer.end();
     }
 

@@ -124,7 +124,7 @@ public class WorldUtil {
         Entity obstacle = new Entity();
         obstacle.add(new Transform(position));
         obstacle.add(new Model(ModelFactory.getCubeModel(1), color));
-        obstacle.add(new Name("2D Obstacle"));
+        obstacle.add(new Name("Obstacle"));
         obstacle.add(new Health(100));
         obstacle.add(new Physics(CollisionShapeFactory.getCubeShape(1), 25, btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK, Constants.OBJECT_FLAG, Constants.ALL_FLAG, Collision.ACTIVE_TAG));
         obstacle.add(new Physics2D(CollisionShapeFactory2D.getBoxShape(0.5f, 0.5f), BodyDef.BodyType.DynamicBody, 1, obstacle.get(Transform.class).transform, false));
@@ -150,7 +150,7 @@ public class WorldUtil {
                 + "[Space] Shoot\n"
                 + "[Shift] Sprint\n"
                 + "[Mouse 2, 3] Rotate view\n"
-                + "[Scroll] Zoom"
+                + "[Scroll] Zoom\n"
                 + "[Esc] Exit",
                 10, 180, Color.GREEN, Align.left));
         Engine.entityManager.add(text);
@@ -161,6 +161,7 @@ public class WorldUtil {
             Engine.systemManager.addAfter(new TextRendererSystem(), ModelRendererSystem.class);
         }
         Entity text = new Entity();
+        text.add(new Name("Demo help message"));
         text.add(new TextMessage("Demo keys - use in this order\n"
                 + "Ex: 1 2 1 1 3 4 5 6 7 8\n"
                 + "[Mouse 2] Rotate view\n"
@@ -184,9 +185,13 @@ public class WorldUtil {
                 + "[8] Add enemies\n"
                 + "      can be pressed several times\n"
                 + "Enemies shoot whenever you shoot\n"
-                + "Enemies rotate when hit, they can hit each other aswell",
-                10, Gdx.graphics.getHeight() - 390, Color.WHITE, Align.left));
+                + "Enemies rotate when hit, they can hit each other aswell\n"
+                + "\n"
+                + "\n"
+                + "Press [H] to show/hide this message",
+                10, Gdx.graphics.getHeight() - 440, Color.WHITE, Align.left));
         Engine.entityManager.add(text);
+        Global.demoHelpMessage = true;
     }
 
 }
