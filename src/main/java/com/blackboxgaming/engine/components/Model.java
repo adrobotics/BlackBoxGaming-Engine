@@ -28,7 +28,7 @@ public class Model implements IComponent, Disposable {
         this.boundingBox = new BoundingBox();
         this.modelInstance.calculateBoundingBox(boundingBox);
     }
-    
+
     public Model(com.badlogic.gdx.graphics.g3d.Model model, Color color, boolean someoneElseHandlesDisposing) {
         this.modelInstance = new ModelInstance(model);
         ((ColorAttribute) (modelInstance.materials.get(0).get(ColorAttribute.Diffuse))).color.set(color);
@@ -57,6 +57,19 @@ public class Model implements IComponent, Disposable {
         this.modelInstance.calculateBoundingBox(boundingBox);
     }
 
+    public Model(ModelInstance modelInstance, float maxHeight) {
+        this.boundingBox = new BoundingBox();
+        modelInstance.calculateBoundingBox(boundingBox);
+        float scalingFactor = maxHeight * 100f / boundingBox.getHeight() / 100f;
+        for (int i = 0; i < modelInstance.nodes.size; i++) {
+            modelInstance.nodes.get(i).scale.set(scalingFactor, scalingFactor, scalingFactor);
+        }
+        modelInstance.calculateTransforms();
+        boundingBox.clr();
+        this.modelInstance = modelInstance;
+        this.modelInstance.calculateBoundingBox(boundingBox);
+    }
+
     @Override
     public String toString() {
         return "MyModel{" + "model=" + modelInstance + '}';
@@ -65,8 +78,11 @@ public class Model implements IComponent, Disposable {
     @Override
     public void dispose() {
         if (!someoneElseHandlesDisposing) {
-            System.out.println("Disposing " + this.getClass());
-            modelInstance.model.dispose();
+            try {
+                modelInstance.model.dispose();
+            } catch (IllegalArgumentException ex) {
+                System.err.println("Error, model probably already disposed.");
+            }
         }
     }
 

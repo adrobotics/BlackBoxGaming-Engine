@@ -1,52 +1,49 @@
 package com.blackboxgaming.engine.systems;
 
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Disposable;
 import com.blackboxgaming.engine.Engine;
 import com.blackboxgaming.engine.Entity;
 import com.blackboxgaming.engine.components.Transform;
-import com.blackboxgaming.engine.util.Global;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
+ * Marks entities for deletion that exceed the world bounds.
  *
  * @author Adrian
  */
-public class AbyssSystem implements ISystem, Disposable {
+public class AbyssSystem extends AbstractSystem {
 
-    private final List<Entity> entities = new ArrayList();
-    private final float abyss = -1f;
-    private final Vector3 v = new Vector3();
+    private final float depth;
+    private final float distance;
     private final Vector3 position = new Vector3();
 
-    @Override
-    public void add(Entity entity) {
-        if (!entities.contains(entity)) {
-            entities.add(entity);
-        }
+    public AbyssSystem() {
+        this(10, 50);
     }
 
     @Override
-    public void remove(Entity entity) {
-        entities.remove(entity);
+    public void markRequiredComponents() {
+    }
+
+    /**
+     * Marks entities for deletion that exceed the world bounds.
+     *
+     * @param depth distance beneath X0Z plane
+     * @param distance from center of the world
+     */
+    public AbyssSystem(float depth, float distance) {
+        this.depth = depth;
+        this.distance = distance;
+        requiredComponents.add(Transform.class);
     }
 
     @Override
     public void update(float delta) {
         for (Entity entity : entities) {
-            position.set(entity.get(Transform.class).transform.getTranslation(v));
-            if (position.y < abyss || Math.abs(position.x) > Global.boxLength / 2f || Math.abs(position.z) > Global.boxWidth / 2f) {
-                System.out.println(entity + " destroyed by abyss");
+            entity.get(Transform.class).transform.getTranslation(position);
+            if (position.y < -depth || Math.abs(position.x) > distance || Math.abs(position.z) > distance) {
                 Engine.garbageManager.markForDeletion(entity);
             }
         }
-    }
-
-    @Override
-    public void dispose() {
-        System.out.println("Disposing " + this.getClass());
-        entities.clear();
     }
 
 }

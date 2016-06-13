@@ -2,6 +2,7 @@ package com.blackboxgaming.engine;
 
 import com.badlogic.gdx.utils.Disposable;
 import com.blackboxgaming.engine.components.IComponent;
+import com.blackboxgaming.engine.components.Name;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -129,6 +130,21 @@ public class Entity {
             sb.replace(sb.length() - 2, sb.length(), "");
         }
         sb.append("]}");
+        return sb.toString();
+    }
+
+    /**
+     * Returns {@link #id} and {@link Name} if available.
+     *
+     * @return
+     */
+    public String toShortString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Entity{id=").append(id);
+        if (this.has(Name.class)) {
+            sb.append(", name=").append(this.get(Name.class).value);
+        }
+        sb.append("}");
         return sb.toString();
     }
 

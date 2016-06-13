@@ -1,6 +1,7 @@
 package com.blackboxgaming.engine.components;
 
 /**
+ * Marks any entity to be the focus point of the {@link OrbitCameraSystem}
  *
  * @author Adrian
  */

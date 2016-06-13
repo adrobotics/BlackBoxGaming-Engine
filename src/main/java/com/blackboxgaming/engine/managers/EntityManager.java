@@ -1,13 +1,21 @@
 package com.blackboxgaming.engine.managers;
 
+import com.blackboxgaming.engine.systems.render.HUDRendererSystem;
+import com.blackboxgaming.engine.systems.render.HealthBarRendererSystem;
+import com.blackboxgaming.engine.systems.render.LayerRendererSystem;
+import com.blackboxgaming.engine.systems.render.ModelRendererSystem;
 import com.blackboxgaming.engine.Engine;
 import com.blackboxgaming.engine.Entity;
 import com.blackboxgaming.engine.components.*;
 import com.blackboxgaming.engine.components.ai.Follow;
 import com.blackboxgaming.engine.systems.*;
 import com.blackboxgaming.engine.systems.ai.FollowSystem;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -36,8 +44,40 @@ public class EntityManager {
         return map.get(entity.id);
     }
 
+    /**
+     * Returns all entities
+     *
+     * @return list of entities
+     */
+    public List<Entity> get() {
+        return new ArrayList(map.values());
+    }
+
+    /**
+     * Return Entity with this id
+     *
+     * @param id
+     * @return
+     */
     public Entity get(int id) {
         return map.get(id);
+    }
+
+    /**
+     * Returns all entities with a specific component
+     *
+     * @param component
+     * @return
+     */
+    public List<Entity> get(Class<? extends IComponent> component) {
+        List<Entity> entitySet = new ArrayList();
+        for (Map.Entry<Integer, Entity> entry : map.entrySet()) {
+            Entity entity = entry.getValue();
+            if (entity.has(component)) {
+                entitySet.add(entity);
+            }
+        }
+        return entitySet;
     }
 
     public void remove(Entity entity) {
@@ -56,6 +96,15 @@ public class EntityManager {
         }
     }
 
+    private void addToSystems_prototype(Entity entity) {
+        for (ISystem system : Engine.systemManager.getAll()) {
+            if (system instanceof AbstractSystem) {
+                // eventually all systems should extend AbstractSystem
+                system.add(entity);
+            }
+        }
+    }
+
     private void addToSystems(Entity entity) {
         // model renderer
         if (entity.has(Transform.class) && entity.has(Model.class)) {
@@ -65,6 +114,9 @@ public class EntityManager {
             }
             if (Engine.systemManager.has(AbyssSystem.class)) {
                 Engine.systemManager.get(AbyssSystem.class).add(entity);
+            }
+            if (entity.has(Animation.class) && Engine.systemManager.has(AnimationSystem.class)) {
+                Engine.systemManager.get(AnimationSystem.class).add(entity);
             }
         }
 
@@ -81,7 +133,7 @@ public class EntityManager {
                 Engine.systemManager.get(PuppetMoverSystem.class).add(entity);
             }
         }
-                
+
         if (entity.has(Puppet.class) && entity.has(Velocity.class) && entity.has(Transform.class) && entity.has(Speed.class)) {
             if (Engine.systemManager.has(PlaneMoverSystem.class)) {
                 Engine.systemManager.get(PlaneMoverSystem.class).add(entity);
@@ -117,8 +169,8 @@ public class EntityManager {
 
         // HUD
         if (entity.has(HUDItem.class)) {
-            if (Engine.systemManager.has(HUDSystem.class)) {
-                Engine.systemManager.get(HUDSystem.class).add(entity);
+            if (Engine.systemManager.has(HUDRendererSystem.class)) {
+                Engine.systemManager.get(HUDRendererSystem.class).add(entity);
             }
         }
 
@@ -126,6 +178,9 @@ public class EntityManager {
         if (entity.has(Health.class)) {
             if (Engine.systemManager.has(HealthSystem.class)) {
                 Engine.systemManager.get(HealthSystem.class).add(entity);
+            }
+            if (Engine.systemManager.has(HealthBarRendererSystem.class)) {
+                Engine.systemManager.get(HealthBarRendererSystem.class).add(entity);
             }
         }
 
@@ -170,12 +225,21 @@ public class EntityManager {
                 Engine.systemManager.get(FollowSystem.class).add(entity);
             }
         }
-        
+
         // restrict
         if (entity.has(RestrictMotion.class)) {
             if (Engine.systemManager.has(RestrictMotionSystem.class)) {
                 Engine.systemManager.get(RestrictMotionSystem.class).add(entity);
             }
         }
+
+        // conways game of life
+        if (entity.has(Cell.class)) {
+            if (Engine.systemManager.has(ConwaySystem.class)) {
+                Engine.systemManager.get(ConwaySystem.class).add(entity);
+            }
+        }
+
+        addToSystems_prototype(entity);
     }
 }

@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
 import com.badlogic.gdx.utils.Disposable;
 import com.blackboxgaming.engine.Engine;
 import com.blackboxgaming.engine.Entity;
+import com.blackboxgaming.engine.components.Child;
 import com.blackboxgaming.engine.components.Damage;
 import com.blackboxgaming.engine.components.Death;
 import com.blackboxgaming.engine.components.Health;
@@ -20,11 +21,13 @@ import com.blackboxgaming.engine.components.Physics2D;
 import com.blackboxgaming.engine.components.Transform;
 import com.blackboxgaming.engine.components.Velocity;
 import com.blackboxgaming.engine.components.Weapon;
+import com.blackboxgaming.engine.components.ai.Follow;
 import com.blackboxgaming.engine.factories.CollisionShapeFactory2D;
 import com.blackboxgaming.engine.factories.ModelFactory;
 import static com.blackboxgaming.engine.factories.WeaponFactory.*;
 import com.blackboxgaming.engine.input.PlayerKeyListener;
 import com.blackboxgaming.engine.util.Global;
+import com.blackboxgaming.engine.util.Randomizer;
 import com.blackboxgaming.engine.util.VUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,13 +87,13 @@ public class WeaponSystem implements ISystem, Disposable {
                     parentTransform = entity.get(Transform.class).transform;
                     nozzleRelativeToWeapon = entity.get(Weapon.class).nozzleRelativeToWeapon;
                     shotOriginAbsolute = parentTransform.cpy().mul(nozzleRelativeToWeapon);
-                    resolveShot(weapon.weaponType, weapon, shotOriginAbsolute);
+                    resolveShot(entity, weapon.weaponType, weapon, shotOriginAbsolute);
                 }
             }
         }
     }
 
-    private void resolveShot(int type, Weapon weapon, Matrix4 origin) {
+    private void resolveShot(Entity shooter, int type, Weapon weapon, Matrix4 origin) {
         switch (type) {
             case WEAPON_GUN:
                 shootGun(origin, weapon);
@@ -106,7 +109,7 @@ public class WeaponSystem implements ISystem, Disposable {
             case WEAPON_GRENADE:
                 break;
             case WEAPON_MELEE:
-                shootMelee(origin, weapon);
+                shootMelee(shooter, origin, weapon);
                 break;
             default:
                 System.out.println("Can't resolve shot");
@@ -154,43 +157,57 @@ public class WeaponSystem implements ISystem, Disposable {
         }
     }
 
-    private void shootMelee(Matrix4 origin, Weapon weapon) {
-        if (Engine.systemManager.has(PhysicsSystem.class)) {
-            // shot collision
-            from.set(origin.getTranslation(from));
-            to.set((origin.cpy().translate(weapon.range, 0, 0)).getTranslation(to));
-            callback.setRayFromWorld(from);
-            callback.setRayToWorld(to);
-            callback.setCollisionObject(null);
-            callback.setClosestHitFraction(1f);
-            Global.getDynamicsWorld().rayTest(from, to, callback);
+    private void shootMelee(Entity shooter, Matrix4 origin, Weapon weapon) {
+        Entity e;
+        e = new Entity();
+        e.add(new Transform(origin));
+        e.add(weapon.nozzleFireModel);
+        e.add(new Death(100));
+        Engine.entityManager.add(e);
+        if (shooter.has(Child.class)) {
+            if (shooter.get(Child.class).parent.has(Follow.class)) {
+                decreaseHealth(shooter.get(Child.class).parent.get(Follow.class).target, weapon.damage);
+            }
+        }
 
-            // damage on hit
-            if (callback.hasHit() && callback.getCollisionObject().getUserValue() == Global.mainCharacter.id) {
-                // nozzle fire model
+        if (Engine.systemManager.has(PhysicsSystem.class)) {
+            // I have no idea what this does anymore
+            // shot collision
+//            from.set(origin.getTranslation(from));
+//            to.set((origin.cpy().translate(weapon.range, 0, 0)).getTranslation(to));
+//            callback.setRayFromWorld(from);
+//            callback.setRayToWorld(to);
+//            callback.setCollisionObject(null);
+//            callback.setClosestHitFraction(1f);
+//            Global.getDynamicsWorld().rayTest(from, to, callback);
+//
+//            // damage on hit
+//            if (callback.hasHit() && callback.getCollisionObject().getUserValue() == Global.mainCharacter.id) {
+//                // nozzle fire model
+//                Entity entity;
+//                entity = new Entity();
+//                entity.add(new Transform(origin));
+//                entity.add(weapon.nozzleFireModel);
+//                entity.add(new Death(100));
+//                Engine.entityManager.add(entity);
+//                decreaseHealth(Engine.entityManager.get(callback.getCollisionObject().getUserValue()), weapon.damage);
+//            }
+        }
+        if (Engine.systemManager.has(PhysicsSystem2D.class)) {
+            // 2D physics
+            from2D.set(VUtil.toVector2(origin.cpy().translate(-0.5f, 0, 0).getTranslation(from)));
+            to2D.set(VUtil.toVector2((origin.cpy().translate(weapon.range, 0, 0)).getTranslation(to)));
+            Global.getDynamicsWorld2D().rayCast(meleeCallback2D, from2D, to2D);
+            if (meleeCallback2D.hasHit) {
+//                if ((int) meleeCallback2D.fixture.getBody().getUserData() == Global.mainCharacter.id) {
                 Entity entity;
                 entity = new Entity();
                 entity.add(new Transform(origin));
                 entity.add(weapon.nozzleFireModel);
                 entity.add(new Death(100));
                 Engine.entityManager.add(entity);
-                decreaseHealth(Engine.entityManager.get(callback.getCollisionObject().getUserValue()), weapon.damage);
-            }
-        } else if (Engine.systemManager.has(PhysicsSystem2D.class)) {
-            // 2D physics
-            from2D.set(VUtil.toVector2(origin.cpy().translate(-0.5f, 0, 0).getTranslation(from)));
-            to2D.set(VUtil.toVector2((origin.cpy().translate(weapon.range, 0, 0)).getTranslation(to)));
-            Global.getDynamicsWorld2D().rayCast(meleeCallback2D, from2D, to2D);
-            if (meleeCallback2D.hasHit) {
-                if ((int) meleeCallback2D.fixture.getBody().getUserData() == Global.mainCharacter.id) {
-                    Entity entity;
-                    entity = new Entity();
-                    entity.add(new Transform(origin));
-                    entity.add(weapon.nozzleFireModel);
-                    entity.add(new Death(100));
-                    Engine.entityManager.add(entity);
-                    decreaseHealth(Engine.entityManager.get((int) meleeCallback2D.fixture.getBody().getUserData()), weapon.damage);
-                }
+                decreaseHealth(Engine.entityManager.get((int) meleeCallback2D.fixture.getBody().getUserData()), weapon.damage);
+//                }
                 meleeCallback2D.hasHit = false;
             }
         }
@@ -215,8 +232,8 @@ public class WeaponSystem implements ISystem, Disposable {
         Entity entity = new Entity();
         entity.add(new Transform(origin.cpy().translate(0.5f, 0, 0)));
         entity.add(new Velocity(weapon.speed, 0, 0));
-//        entity.add(new Model(weapon.bulletModel.modelInstance.copy().model, ((ColorAttribute)weapon.bulletModel.modelInstance.materials.get(0).get(ColorAttribute.Diffuse)).color, true));
-        entity.add(new Model(weapon.bulletModel.modelInstance.copy().model, ((ColorAttribute) weapon.bulletModel.modelInstance.materials.get(0).get(ColorAttribute.Diffuse)).color, true));
+        entity.add(new Model(weapon.bulletModel.modelInstance.copy().model, Randomizer.getRandomColor(), true));
+//        entity.add(new Model(weapon.bulletModel.modelInstance.copy().model, ((ColorAttribute) weapon.bulletModel.modelInstance.materials.get(0).get(ColorAttribute.Diffuse)).color, true));
         entity.add(new Death(2000));
         entity.add(new Damage(weapon.damage));
 //        entity.add(new Physics(CollisionShapeFactory.getSphereShape(0.5f), 0.5f, btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK, CollisionFlag.BULLET_COLLISION_FLAG, CollisionFlag.ALL_FLAG, Collision.ACTIVE_TAG));

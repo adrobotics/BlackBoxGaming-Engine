@@ -41,17 +41,19 @@ public class Global {
     public static final boolean showSplashScreen = true;
     public static final boolean showMenuScreen = true;
     public static boolean profiling = false;
-    
-    
+
     public static boolean renderHealthBar = false;
     public static final float splashScreenTime = 3000;
+    @Deprecated
     public static boolean START_WITH_ANDROID_GESTURE_LISTENER = false;
     public static Button scoreButton;
     public static Label LEVEL_LABEL;
     public static Label HEALTH_LABEL;
-    
+    public static boolean demoHelpMessage;
+
     // debug
     public static boolean DEBUG_FRUSTRUM_CULLING_SHAPES = false;
+    public static boolean DEBUG_BOUNGING_BOX_SHAPES = false;
     public static boolean DEBUG_ROTATION = false;
     public static boolean DEBUG_PHYSICS = false;
     public static boolean SHADOW = false;
@@ -83,7 +85,7 @@ public class Global {
     private static btDynamicsWorld dynamicsWorld = null;
     private static World dynamicsWorld2D = null;
     public static float gravity = -10;
-    private final static float gravity2D = 0;
+    private final static float gravity2D = 0f;
     public final static float friction = 1f;
     public static boolean leftMouseCameraMove = false;
 
@@ -104,6 +106,7 @@ public class Global {
     public static boolean touchLeft;
     public static boolean touchRight;
     public static int glassId;
+    @Deprecated
     public static PerformanceCounter performanceCounter;
     public static boolean loopAmbientSound = false;
 
@@ -122,10 +125,11 @@ public class Global {
     public static String gameScreen = "game";
 
     private static Vector3 lightDirection = new Vector3(0.5f, -0.75f, -0.25f);
-    public static boolean hideMaxHealth = true;
+    public static boolean hideMaxHealth = false;
     public static long lastPrint;
     public static Label BRICK_LABEL;
     public static Image swipeIcon;
+    public static boolean loaded;
 
     public static DirectionalShadowLight getShadowLight() {
         if (shadowLight == null) {
@@ -152,13 +156,20 @@ public class Global {
     public static Camera getCamera() {
         if (camera == null) {
             camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            camera.position.set(0, 14, 0);
+            camera.position.set(0, 15, 0);
             camera.lookAt(0, 0, 0);
             camera.near = 0.1f;
             camera.far = 300;
             camera.update();
         }
         return camera;
+    }
+
+    public static void setCamera(float x, float y, float z) {
+        Global.getCamera().position.set(x, y, z);
+        Global.getCamera().lookAt(0, 0, 0);
+        Global.getCamera().up.set(Vector3.Y);
+        Global.getCamera().update();
     }
 
     public static CameraInputController getCameraController() {
@@ -184,7 +195,7 @@ public class Global {
 
     public static World getDynamicsWorld2D() {
         if (dynamicsWorld2D == null) {
-            dynamicsWorld2D = new World(new Vector2(0, gravity2D), true);
+            dynamicsWorld2D = new World(new Vector2(0f, gravity2D), true);
         }
         return dynamicsWorld2D;
     }

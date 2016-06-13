@@ -136,5 +136,17 @@ public class Randomizer {
     public static String getRandomCollisionShapeName() {
         return collisionShapeName[rand.nextInt(collisionShapeName.length)];
     }
+    
+    public static boolean getRandomBoolean(){
+        return rand.nextBoolean();
+    }
+    
+    public static int getRandomInteger(){
+        return rand.nextInt();
+    }
+    
+    public static int getRandomInteger(int upperBound){
+        return rand.nextInt(upperBound);
+    }
 
 }

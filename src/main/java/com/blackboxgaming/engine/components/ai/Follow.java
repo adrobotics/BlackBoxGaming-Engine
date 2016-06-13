@@ -17,4 +17,9 @@ public class Follow implements IComponent {
         this.distance = distance;
     }
 
+    @Override
+    public String toString() {
+        return "Follow{" + "target=" + target.id + ", distance=" + distance + '}';
+    }
+
 }

@@ -18,13 +18,29 @@ import com.badlogic.gdx.math.Vector3;
 public class ModelFactory {
 
     private static final ModelBuilder modelBuilder = new ModelBuilder();
+    private static Model cube;
+    private static Model sphere;
+
+    public static Model getTheSameCubeModel(float size) {
+        if (cube == null) {
+            cube = getCubeModel(size);
+        }
+        return cube;
+    }
 
     public static Model getCubeModel(float size) {
         return modelBuilder.createBox(size, size, size, new Material(ColorAttribute.createDiffuse(Color.BLUE)), Usage.Position | Usage.Normal);
     }
+    
+    public static Model getTheSameSphereModel(float size) {
+        if (sphere == null) {
+            sphere = getSphereModel(size);
+        }
+        return sphere;
+    }
 
     public static Model getSphereModel(float size) {
-        return modelBuilder.createSphere(size, size, size, 10, 10, new Material(ColorAttribute.createDiffuse(Color.GREEN)), Usage.Position | Usage.Normal);
+        return getSphereModel(size, 10);
     }
 
     public static Model getSphereModel(float size, int divisions) {
@@ -63,10 +79,13 @@ public class ModelFactory {
         return modelBuilder.createBox(width, height, depth, new Material(ColorAttribute.createDiffuse(Color.OLIVE)), Usage.Position | Usage.Normal);
     }
 
+    public static Model getXYZCoordinates(float size) {
+        return modelBuilder.createXYZCoordinates(size, new Material(ColorAttribute.createDiffuse(Color.OLIVE)), Usage.Position | Usage.Normal);
+    }
+
     public static Model getConcaveModel() {
         Model m = modelBuilder.createBox(3, 3, 3, new Material(ColorAttribute.createDiffuse(Color.OLIVE)), Usage.Position | Usage.Normal);
         Model m2 = modelBuilder.createBox(2, 20, 2, new Material(ColorAttribute.createDiffuse(Color.OLIVE)), Usage.Position | Usage.Normal);
-
 
         modelBuilder.begin();
         MeshPartBuilder meshPartBuilder = modelBuilder.part("part1", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal, new Material(ColorAttribute.createDiffuse(Color.OLIVE)));

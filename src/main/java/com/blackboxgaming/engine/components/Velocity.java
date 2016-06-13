@@ -3,33 +3,33 @@ package com.blackboxgaming.engine.components;
 import com.badlogic.gdx.math.Vector3;
 
 /**
+ * Component that holds linear and angular velocity vectors.
  *
  * @author Adrian
  */
 public class Velocity implements IComponent {
 
-    public final Vector3 velocity;
-    public final Vector3 angularVelocity;
-    public boolean trnFlag = false;
+    public final Vector3 linear;
+    public final Vector3 angular;
 
     public Velocity() {
-        velocity = new Vector3();
-        angularVelocity = new Vector3();
+        linear = new Vector3();
+        angular = new Vector3();
     }
 
     public Velocity(float x, float y, float z) {
-        velocity = new Vector3(x, y, z);
-        angularVelocity = new Vector3();
+        linear = new Vector3(x, y, z);
+        angular = new Vector3();
     }
 
     public Velocity(Vector3 copyVector) {
-        velocity = copyVector.cpy();
-        angularVelocity = new Vector3();
+        linear = copyVector.cpy();
+        angular = new Vector3();
     }
 
     @Override
     public String toString() {
-        return "Velocity{" + "velocity=" + velocity + ", angularVelocirt=" + angularVelocity + '}';
+        return "Velocity{" + "linear=" + linear + ", angular=" + angular + '}';
     }
-    
+
 }

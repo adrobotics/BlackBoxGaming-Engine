@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Disposable;
 
 /**
+ * Class that manages input listeners
  *
  * @author Adrian
  */
@@ -21,9 +22,9 @@ public class InputManager implements Disposable {
         System.out.println("Adding inputProcessor: " + inputProcessor);
         multiplexer.addProcessor(inputProcessor);
     }
-    
+
     public void remove(InputProcessor inputProcessor) {
-        System.out.println("Adding inputProcessor: " + inputProcessor);
+        System.out.println("Removing inputProcessor: " + inputProcessor);
         multiplexer.removeProcessor(inputProcessor);
     }
 

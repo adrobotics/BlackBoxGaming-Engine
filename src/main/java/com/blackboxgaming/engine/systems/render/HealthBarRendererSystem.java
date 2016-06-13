@@ -1,4 +1,4 @@
-package com.blackboxgaming.engine.systems;
+package com.blackboxgaming.engine.systems.render;
 
 import com.badlogic.gdx.graphics.Color;
 import static com.badlogic.gdx.graphics.GL20.GL_TRIANGLES;
@@ -17,7 +17,8 @@ import com.blackboxgaming.engine.Entity;
 import com.blackboxgaming.engine.components.Health;
 import com.blackboxgaming.engine.components.Model;
 import com.blackboxgaming.engine.components.Transform;
-import static com.blackboxgaming.engine.systems.ModelRendererSystem.modelBatch;
+import com.blackboxgaming.engine.systems.ISystem;
+import static com.blackboxgaming.engine.systems.render.ModelRendererSystem.modelBatch;
 import com.blackboxgaming.engine.util.Global;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,6 @@ public class HealthBarRendererSystem implements ISystem, Disposable {
 
     private final List<Entity> entities = new ArrayList();
     private Health health;
-    private final ShapeRenderer shapeRenderer;
     private final ModelBuilder modelBuilder;
     private final float width = 2f;
     private final float height = 0.25f;
@@ -55,7 +55,6 @@ public class HealthBarRendererSystem implements ISystem, Disposable {
 
     public HealthBarRendererSystem() {
         this.modelBuilder = new ModelBuilder();
-        this.shapeRenderer = new ShapeRenderer();
     }
 
     @Override
@@ -153,9 +152,12 @@ public class HealthBarRendererSystem implements ISystem, Disposable {
     public void dispose() {
         System.out.println("Disposing " + this.getClass());
         entities.clear();
-        backPlate.model.dispose();
-        frontPlate.model.dispose();
-        shapeRenderer.dispose();
+        if (backPlate != null && backPlate.model != null) {
+            backPlate.model.dispose();
+        }
+        if (frontPlate != null && frontPlate.model != null) {
+            frontPlate.model.dispose();
+        }
     }
 
 }

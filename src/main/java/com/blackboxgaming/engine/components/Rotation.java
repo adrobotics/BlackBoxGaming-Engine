@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Quaternion;
  *
  * @author Adrian
  */
+@Deprecated
 public class Rotation implements IComponent {
 
     public Quaternion rotation;

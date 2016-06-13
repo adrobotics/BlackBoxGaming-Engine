@@ -10,6 +10,7 @@ import java.util.List;
  *
  * @author Adrian
  */
+@Deprecated
 public class FearSystem implements ISystem {
 
     public static List<Entity> fearers = new ArrayList();

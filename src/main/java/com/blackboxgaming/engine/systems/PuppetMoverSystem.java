@@ -1,5 +1,6 @@
 package com.blackboxgaming.engine.systems;
 
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -7,6 +8,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.blackboxgaming.engine.components.Transform;
 import com.blackboxgaming.engine.components.Speed;
 import com.blackboxgaming.engine.Entity;
+import com.blackboxgaming.engine.components.Animation;
 import com.blackboxgaming.engine.components.Puppet;
 import com.blackboxgaming.engine.components.Velocity;
 import com.blackboxgaming.engine.input.AndroidGestureListener;
@@ -25,7 +27,7 @@ public class PuppetMoverSystem implements ISystem, Disposable {
     private Matrix4 transform;
     private Vector3 velocity;
     private Vector3 angularVelocity;
-    private Speed speedComponent;
+    private Speed speed;
     private Puppet puppet;
     private float linearSpeed;
     private float angularSpeed;
@@ -53,11 +55,11 @@ public class PuppetMoverSystem implements ISystem, Disposable {
             angVAux.setZero();
 
             transform = entity.get(Transform.class).transform;
-            velocity = entity.get(Velocity.class).velocity;
-            angularVelocity = entity.get(Velocity.class).angularVelocity;
-            speedComponent = entity.get(Speed.class);
-            linearSpeed = speedComponent.speed;
-            angularSpeed = speedComponent.angularSpeed;
+            velocity = entity.get(Velocity.class).linear;
+            angularVelocity = entity.get(Velocity.class).angular;
+            speed = entity.get(Speed.class);
+            linearSpeed = speed.speed;
+            angularSpeed = speed.angularSpeed;
 
             // is flying?
             puppet = entity.get(Puppet.class);
@@ -69,8 +71,11 @@ public class PuppetMoverSystem implements ISystem, Disposable {
 
             // speed boost
             if (PlayerKeyListener.leftShift) {
-                linearSpeed *= speedComponent.linearBoost;
-                angularSpeed *= speedComponent.angularBoost;
+                linearSpeed *= speed.linearBoost;
+                angularSpeed *= speed.angularBoost;
+            } else if (PlayerKeyListener.leftAlt) {
+                linearSpeed /= speed.linearBoost;
+                angularSpeed /= speed.linearBoost;
             }
 
             // rotation
@@ -124,6 +129,37 @@ public class PuppetMoverSystem implements ISystem, Disposable {
             // setting new values
             velocity.set(vAux.scl(linearSpeed));
             angularVelocity.set(angVAux);
+
+            // animation
+            if (entity.has(Animation.class)) {
+                AnimationController controller = entity.get(Animation.class).controller;
+                controller.allowSameAnimation = false;
+                if (PlayerKeyListener.clickLeft) {
+//                    controller.setAnimation("Attack", -1);
+                    controller.animate("Attack", -1, null, 0.175f);
+                } else {
+                    if (!controller.inAction) {
+                        if (PlayerKeyListener.forward || PlayerKeyListener.backward || PlayerKeyListener.strafeLeft || PlayerKeyListener.strafeRight) {
+                            float animationSpeed = 1;
+                            if (PlayerKeyListener.backward) {
+                                animationSpeed *= -1;
+                            }
+                            if (PlayerKeyListener.leftShift) {
+                                animationSpeed *= speed.linearBoost;
+                            }
+                            if (PlayerKeyListener.leftShift) {
+                                controller.animate("Walk", -1, animationSpeed, null, 0.175f);
+                            } else if (PlayerKeyListener.leftAlt) {
+                                controller.animate("Sneak", -1, animationSpeed, null, 0.175f);
+                            } else {
+                                controller.animate("Walk", -1, animationSpeed, null, 0.175f);
+                            }
+                        } else {
+                            controller.animate("Idle", -1, null, 0.175f);
+                        }
+                    }
+                }
+            }
         }
     }
 

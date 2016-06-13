@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Adrian
  */
+@Deprecated
 public class AndroidGestureListener implements GestureDetector.GestureListener {
 
     public static boolean panning;
