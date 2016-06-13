@@ -2,7 +2,7 @@
 Entity system game engine
 
 This project is my attempt at simplifying the game creation process.
-[!BlackBoxGaming-Engine Demo(http://i.imgur.com/HC1TlpL.png)](https://www.youtube.com/watch?v=PUpRtXzB8hk)
+[![BlackBoxGaming-Engine Demo](http://i.imgur.com/HC1TlpL.png)](https://www.youtube.com/watch?v=PUpRtXzB8hk)
 
 You need to have Gradle installed to build and run the demo.
 http://gradle.org/gradle-download/
